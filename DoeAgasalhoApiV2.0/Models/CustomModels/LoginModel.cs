@@ -1,4 +1,4 @@
-﻿namespace DoeAgasalhoApiV2._0.Models
+﻿namespace DoeAgasalhoApiV2._0.Models.CustomModels
 {
     public class LoginModel
     {

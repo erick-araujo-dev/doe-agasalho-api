@@ -1,6 +1,4 @@
-﻿using DoeAgasalhoApiV2._0.Entities;
-
-namespace DoeAgasalhoApiV2._0.Services.Interface
+﻿namespace DoeAgasalhoApiV2._0.Services.Interface
 {
     public interface ILoginService
     {

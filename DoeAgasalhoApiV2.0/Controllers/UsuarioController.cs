@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DoeAgasalhoApiV2._0.Models;
 using DoeAgasalhoApiV2._0.Services.Interface;
-using DoeAgasalhoApiV2._0.Entities;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using DoeAgasalhoApiV2._0.Exceptions;
+using DoeAgasalhoApiV2._0.Models.CustomModels;
+using DoeAgasalhoApiV2._0.Models.Entities;
 
 namespace DoeAgasalhoApiV2._0.Controllers
 {

@@ -17,6 +17,7 @@ namespace DoeAgasalhoApiV2._0.Config
             services.AddScoped<IUsuarioService, UsuarioService>();            
             services.AddScoped<ILoginService, LoginService>();            
             services.AddScoped<ITokenService, TokenService>();            
+            services.AddScoped<IEnderecoService, EnderecoService>();            
         }
     }
 }

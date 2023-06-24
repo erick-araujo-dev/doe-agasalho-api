@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DoeAgasalhoApiV2._0.Models
+namespace DoeAgasalhoApiV2._0.Models.CustomModels
 {
     public class ChangeCollectPointModel
     {

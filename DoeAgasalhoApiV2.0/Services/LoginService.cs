@@ -1,5 +1,4 @@
-﻿using DoeAgasalhoApiV2._0.Entities;
-using DoeAgasalhoApiV2._0.Services.Interface;
+﻿using DoeAgasalhoApiV2._0.Services.Interface;
 
 namespace DoeAgasalhoApiV2._0.Services
 {

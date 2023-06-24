@@ -238,3 +238,7 @@ C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sis
 C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\obj\Debug\net7.0\DoeAgasalhoApiV2.0.pdb
 C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\obj\Debug\net7.0\DoeAgasalhoApiV2.0.genruntimeconfig.cache
 C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\obj\Debug\net7.0\ref\DoeAgasalhoApiV2.0.dll
+C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\bin\Debug\net7.0\xunit.abstractions.dll
+C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\bin\Debug\net7.0\xunit.assert.dll
+C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\bin\Debug\net7.0\xunit.core.dll
+C:\Users\x396200\OneDrive - rede.sp\Documents\Projects\Arquivos Doe Agasalho\Sistema DoeAgasalho - Intranet\DoeAgasalhoApiV2.0\DoeAgasalhoApiV2.0\bin\Debug\net7.0\xunit.execution.dotnet.dll

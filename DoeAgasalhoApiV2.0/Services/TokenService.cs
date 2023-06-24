@@ -1,5 +1,5 @@
 ﻿using DoeAgasalhoApiV2._0.Config;
-using DoeAgasalhoApiV2._0.Entities;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

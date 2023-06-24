@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DoeAgasalhoApiV2._0.Entities;
+namespace DoeAgasalhoApiV2._0.Models.Entities;
 
 public partial class Endereco
 {
@@ -16,7 +16,7 @@ public partial class Endereco
     public string Bairro { get; set; } = null!;
 
     public string Cidade { get; set; } = null!;
-    
+
     public string Estado { get; set; } = null!;
 
     public string Cep { get; set; } = null!;

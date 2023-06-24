@@ -1,6 +1,6 @@
-using DoeAgasalhoApiV2._0.Context;
 using Microsoft.EntityFrameworkCore;
 using DoeAgasalhoApiV2._0.Config;
+using DoeAgasalhoApiV2._0.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,3 +62,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

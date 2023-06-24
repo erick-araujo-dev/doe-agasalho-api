@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using DoeAgasalhoApiV2._0.Entities;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DoeAgasalhoApiV2._0.Context;
+namespace DoeAgasalhoApiV2._0.Data.Context;
 
 public partial class DbDoeagasalhov2Context : DbContext
 {

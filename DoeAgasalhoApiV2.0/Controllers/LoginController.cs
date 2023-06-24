@@ -1,7 +1,5 @@
-﻿using DoeAgasalhoApiV2._0.Entities;
-using DoeAgasalhoApiV2._0.Models;
+﻿using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Repository.Interface;
-using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

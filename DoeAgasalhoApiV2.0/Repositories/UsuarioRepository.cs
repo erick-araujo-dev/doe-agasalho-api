@@ -1,6 +1,6 @@
-﻿using DoeAgasalhoApiV2._0.Context;
-using DoeAgasalhoApiV2._0.Entities;
-using DoeAgasalhoApiV2._0.Models;
+﻿using DoeAgasalhoApiV2._0.Data.Context;
+using DoeAgasalhoApiV2._0.Models.CustomModels;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repository.Interface;
 
 namespace DoeAgasalhoApiV2._0.Repository

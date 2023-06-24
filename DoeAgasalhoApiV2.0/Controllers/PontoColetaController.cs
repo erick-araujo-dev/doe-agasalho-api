@@ -1,5 +1,5 @@
-﻿using DoeAgasalhoApiV2._0.Entities;
-using DoeAgasalhoApiV2._0.Models;
+﻿using DoeAgasalhoApiV2._0.Models.CustomModels;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +28,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return StatusCode(400, $"Tipo de dado inválido: {ex.Message}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Ocorreu um erro ao adicionar o ponto de coleta.");
+                return BadRequest(ex.Message);
             }
         }
 

@@ -1,6 +1,6 @@
-﻿using DoeAgasalhoApiV2._0.Context;
-using DoeAgasalhoApiV2._0.Entities;
-using DoeAgasalhoApiV2._0.Models;
+﻿using DoeAgasalhoApiV2._0.Data.Context;
+using DoeAgasalhoApiV2._0.Models.CustomModels;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +18,11 @@ namespace DoeAgasalhoApiV2._0.Repositories
         public PontoColeta GetById(int id)
         {
             return _context.PontoColeta.FirstOrDefault(p => p.Id == id);
+        }
+
+        public PontoColeta GetByName(string name)
+        {
+            return _context.PontoColeta.FirstOrDefault(u => u.NomePonto == name);
         }
 
         public List<NovoPontoColetaModel> GetAll()
