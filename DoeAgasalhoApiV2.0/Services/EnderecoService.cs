@@ -1,4 +1,5 @@
-﻿using DoeAgasalhoApiV2._0.Services.Interface;
+﻿using DoeAgasalhoApiV2._0.Exceptions;
+using DoeAgasalhoApiV2._0.Services.Interface;
 using System.Text;
 
 namespace DoeAgasalhoApiV2._0.Services
@@ -15,92 +16,101 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             // Abreviar se necessário
-            estado = AbreviarEstado(estado);
+            estado = _AbbreviateState(estado);
+
+            //Valida a sigla
+            _ValidateStateName(estado);
 
             //Formata o cep
-            FormatarCep(cep);
-
-            // Valida se a sigla é válida
-            if (!ValidarSiglaEstado(estado))
-            {
-                throw new ArgumentException("Digite um Estado válido.");
-            }
+            _FormatZipCode(cep);
         }
 
-        private string AbreviarEstado(string estado)
+        private string _AbbreviateState(string estado)
         {
-            switch (estado.ToUpperInvariant().Normalize(NormalizationForm.FormD))
+            if (estado.Length > 2)
             {
-                case "ACRE":
-                    return "AC";
-                case "ALAGOAS":
-                    return "AL";
-                case "AMAPA":
-                    return "AP";
-                case "AMAZONAS":
-                    return "AM";
-                case "BAHIA":
-                    return "BA";
-                case "CEARA":
-                    return "CE";
-                case "DISTRITO FEDERAL":
-                    return "DF";
-                case "ESPIRITO SANTO":
-                    return "ES";
-                case "GOIAS":
-                    return "GO";
-                case "MARANHAO":
-                    return "MA";
-                case "MATO GROSSO":
-                    return "MT";
-                case "MATO GROSSO DO SUL":
-                    return "MS";
-                case "MINAS GERAIS":
-                    return "MG";
-                case "PARA":
-                    return "PA";
-                case "PARAIBA":
-                    return "PB";
-                case "PARANA":
-                    return "PR";
-                case "PERNAMBUCO":
-                    return "PE";
-                case "PIAUI":
-                    return "PI";
-                case "RIO DE JANEIRO":
-                    return "RJ";
-                case "RIO GRANDE DO NORTE":
-                    return "RN";
-                case "RIO GRANDE DO SUL":
-                    return "RS";
-                case "RONDONIA":
-                    return "RO";
-                case "RORAIMA":
-                    return "RR";
-                case "SANTA CATARINA":
-                    return "SC";
-                case "SAO PAULO":
-                    return "SP";
-                case "SERGIPE":
-                    return "SE";
-                case "TOCANTINS":
-                    return "TO";
-                default:
-                    return estado;
+                switch (estado?.ToUpper())
+                {
+                    case "ACRE":
+                        return "AC";
+                    case "ALAGOAS":
+                        return "AL";
+                    case "AMAPÁ":
+                        return "AP";
+                    case "AMAZONAS":
+                        return "AM";
+                    case "BAHIA":
+                        return "BA";
+                    case "CEARÁ":
+                        return "CE";
+                    case "DISTRITO FEDERAL":
+                        return "DF";
+                    case "ESPÍRITO SANTO":
+                        return "ES";
+                    case "GOIAS":
+                        return "GO";
+                    case "MARANHAO":
+                        return "MA";
+                    case "MATO GROSSO":
+                        return "MT";
+                    case "MATO GROSSO DO SUL":
+                        return "MS";
+                    case "MINAS GERAIS":
+                        return "MG";
+                    case "PARÁ":
+                        return "PA";
+                    case "PARAÍBA":
+                        return "PB";
+                    case "PARANÁ":
+                        return "PR";
+                    case "PERNAMBUCO":
+                        return "PE";
+                    case "PIAUÍ":
+                        return "PI";
+                    case "RIO DE JANEIRO":
+                        return "RJ";
+                    case "RIO GRANDE DO NORTE":
+                        return "RN";
+                    case "RIO GRANDE DO SUL":
+                        return "RS";
+                    case "RONDÔNIA":
+                        return "RO";
+                    case "RORAIMA":
+                        return "RR";
+                    case "SANTA CATARINA":
+                        return "SC";
+                    case "SÃO PAULO":
+                        return "SP";
+                    case "SERGIPE":
+                        return "SE";
+                    case "TOCANTINS":
+                        return "TO";
+                    default:
+                        return estado;
+                }
             }
+            return estado.ToUpper();
         }
 
-        private bool ValidarSiglaEstado(string estado)
+        private void _ValidateStateName(string estado)
         {
             var siglasValidas = new List<string> { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
-            return siglasValidas.Contains(estado.ToUpper());
+            if (!siglasValidas.Contains(estado.ToUpper()))
+            {
+                throw new BusinessOperationException("Nome de estado inválido, digite um nome válido.");
+            }
         }
 
-        private string FormatarCep(string cep)
+
+        private string _FormatZipCode(string cep)
         {
             if (!string.IsNullOrWhiteSpace(cep) && cep.Length == 8)
             {
                 cep = cep.Insert(5, "-");
+            }
+            else
+            {
+                throw new ArgumentException("Digite o cep completo com 8 números sem o traço ('-')");
             }
 
             return cep;

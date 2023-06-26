@@ -24,7 +24,7 @@ namespace DoeAgasalhoApiV2._0.Services
             return user?.Ativo == "1";
         }
 
-        private bool IsEmailAlreadyExists(string email)
+        private bool _IsEmailAlreadyExists(string email)
         {
             var user = _usuarioRepository.GetByEmail(email);
             return user != null;
@@ -34,7 +34,7 @@ namespace DoeAgasalhoApiV2._0.Services
         //Validacao tipo de dados 
 
         //Validacao nome
-        private void ValidateUsername(string name)
+        private void _ValidateUsername(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -49,7 +49,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Validacao email 
-        private void ValidateEmail(string email)
+        private void _ValidateEmail(string email)
         {
             // Expressao regular para validar o formato do email
             string emailRegexPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
@@ -61,7 +61,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Valida senha
-        private void ValidatePassword(string password)
+        private void _ValidatePassword(string password)
         {
             // Verificar o comprimento mínimo de oito caracteres
             if (password.Length < 8)
@@ -91,7 +91,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Valida tipo de usuario
-        private void ValidateUserType(string userType)
+        private void _ValidateUserType(string userType)
         {
             if (userType != "admin" && userType != "normal")
             {
@@ -100,7 +100,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Valida ponto de coleta 
-        private void ValidateCollectPoint(ChangeCollectPointModel changePointModel)
+        private void _ValidateCollectPoint(ChangeCollectPointModel changePointModel)
         {
             /*Verifica se eh admin, se for só aceita valor null, se for normal não aceita valor null e faz 
             uma busca na tabela de ponto de coleta pra ver se o existe o ponto de coleta*/
@@ -125,7 +125,7 @@ namespace DoeAgasalhoApiV2._0.Services
             }
         }
 
-        private void ValidateCollectPoint(UsuarioCreateModel createUserModel)
+        private void _ValidateCollectPoint(UsuarioCreateModel createUserModel)
         { 
             if (createUserModel.Tipo == "admin" && createUserModel.PontoColetaId.HasValue)
             {
@@ -148,7 +148,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Validacao Ativo
-        private void ValidateActive(string ativo)
+        private void _ValidateActive(string ativo)
         {
             if (ativo != "1" && ativo != "0")
             {
@@ -178,16 +178,16 @@ namespace DoeAgasalhoApiV2._0.Services
         public Usuario CreateUser(UsuarioCreateModel user)
 
         {
-            if (IsEmailAlreadyExists(user.Email))
+            if (_IsEmailAlreadyExists(user.Email))
             {
                 throw new BusinessOperationException("O email fornecido já está sendo utilizado por outro usuário. Por favor, utilize outro email.");
             }
 
-            ValidateUsername(user.Nome);
-            ValidateEmail(user.Email);
-            ValidatePassword(user.Senha);
-            ValidateUserType(user.Tipo);
-            ValidateCollectPoint(user);
+            _ValidateUsername(user.Nome);
+            _ValidateEmail(user.Email);
+            _ValidatePassword(user.Senha);
+            _ValidateUserType(user.Tipo);
+            _ValidateCollectPoint(user);
 
             return _usuarioRepository.Add(user);
         }
@@ -208,7 +208,7 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Você não tem permissão para atualizar este usuário.");
             }
 
-            ValidateUsername(user.Nome);
+            _ValidateUsername(user.Nome);
 
             existingUser.Nome = user.Nome;
 
@@ -236,7 +236,7 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new InvalidOperationException("O usuário já esta cadastrado nesse ponto.");
             }
 
-            ValidateCollectPoint(user);
+            _ValidateCollectPoint(user);
 
             existingUser.PontoColetaId = user.PontoColetaId;
 
@@ -263,13 +263,13 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             // Verificar se a senha atual fornecida corresponde à senha do usuário
-            if (!VerifyPassword(existingUser, user.SenhaAtual))
+            if (!_VerifyPassword(existingUser, user.SenhaAtual))
             {
                 throw new InvalidOperationException("A senha atual está incorreta.");
             }
 
             // Validar a nova senha
-            ValidatePassword(user.NovaSenha);
+            _ValidatePassword(user.NovaSenha);
 
             // Atualizar a senha do usuário
             existingUser.Senha = user.NovaSenha;
@@ -278,7 +278,7 @@ namespace DoeAgasalhoApiV2._0.Services
             return existingUser;
         }
 
-        private bool VerifyPassword(Usuario user, string password)
+        private bool _VerifyPassword(Usuario user, string password)
         {
             return user.Senha == password;
         }
@@ -301,7 +301,7 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
             }
 
-            ValidateActive(user.Ativo);
+            _ValidateActive(user.Ativo);
 
             if (user.Ativo == "1")
             {
@@ -327,7 +327,7 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
             }
 
-            ValidateActive(user.Ativo);
+            _ValidateActive(user.Ativo);
 
             if (user.Ativo == "0")
             {
