@@ -14,42 +14,42 @@ namespace DoeAgasalhoApiV2._0.Repository
             _context = context;
         }
 
-        public Usuario GetByEmail(string email)
+        public UsuarioModel GetByEmail(string email)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Email == email);
         }
 
-        public List<Usuario> GetAll()
+        public List<UsuarioModel> GetAll()
         {
             return _context.Usuarios.ToList();
         }
 
 
-        public List<Usuario> GetByActiveStatus(bool ativo)
+        public List<UsuarioModel> GetByActiveStatus(bool ativo)
         {
             string ativoString = ativo ? "1" : "0";
             return _context.Usuarios.Where(u => u.Ativo == ativoString).ToList();
         }
 
-        public Usuario GetById(int id)
+        public UsuarioModel GetById(int id)
         {
             return _context.Usuarios.Find(id);
         }
 
-        public Usuario GetByUserName(string name)
+        public UsuarioModel GetByUserName(string name)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Nome == name);
         }
 
-        public Usuario GetByEmailAndPassword(string email, string password)
+        public UsuarioModel GetByEmailAndPassword(string email, string password)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Email == email && u.Senha == password);
         }
                 
 
-        public Usuario Add(UsuarioCreateModel usuario)
+        public UsuarioModel Add(UsuarioCreateModel usuario)
         {
-            var novoUsuario = new Usuario
+            var novoUsuario = new UsuarioModel
             {
                 Nome = usuario.Nome,
                 Email = usuario.Email,
@@ -65,7 +65,7 @@ namespace DoeAgasalhoApiV2._0.Repository
             return novoUsuario;
         }
 
-        public void Update(Usuario usuario)
+        public void Update(UsuarioModel usuario)
         {
             _context.Usuarios.Update(usuario);
             _context.SaveChanges();

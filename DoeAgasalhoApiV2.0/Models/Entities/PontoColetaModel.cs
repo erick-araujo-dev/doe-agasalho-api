@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DoeAgasalhoApiV2._0.Models.Entities;
 
-public partial class PontoColeta
+public partial class PontoColetaModel
 {
     public int Id { get; set; }
 
@@ -13,5 +13,5 @@ public partial class PontoColeta
 
     public int EnderecoId { get; set; }
 
-    public virtual Endereco Endereco { get; set; } = null!;
+    public virtual EnderecoModel Endereco { get; set; } = null!;
 }

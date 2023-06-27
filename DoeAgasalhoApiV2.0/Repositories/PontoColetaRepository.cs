@@ -15,23 +15,43 @@ namespace DoeAgasalhoApiV2._0.Repositories
             _context = context;
         }
 
-        public PontoColeta GetById(int id)
+        public PontoColetaModel GetById(int id)
         {
             return _context.PontoColeta.FirstOrDefault(p => p.Id == id);
         }
 
-        public PontoColeta GetByName(string name)
+        public List<PontoColetaCreateModel> GetByActiveStatus(bool ativo)
+        {
+            string ativoString = ativo ? "1" : "0";
+            return _context.PontoColeta.
+                Include(u => u.Endereco).
+                Select(p => new PontoColetaCreateModel
+                {
+                    NomePonto = p.NomePonto,
+                    Logradouro = p.Endereco.Logradouro,
+                    Numero = p.Endereco.Numero,
+                    Complemento = p.Endereco.Complemento,
+                    Bairro = p.Endereco.Bairro,
+                    Cidade = p.Endereco.Cidade,
+                    Estado = p.Endereco.Estado,
+                    Cep = p.Endereco.Cep
+
+                }).ToList();
+        }
+
+        public PontoColetaModel GetByName(string name)
         {
             return _context.PontoColeta.FirstOrDefault(u => u.NomePonto == name);
         }
 
-        public List<NovoPontoColetaModel> GetAll()
+        public List<PontoColetaCreateModel> GetAll()
         {
             return _context.PontoColeta.
                 Include(u => u.Endereco).
-                Select(p => new NovoPontoColetaModel
+                Select(p => new PontoColetaCreateModel
             {
                 NomePonto = p.NomePonto,
+                Ativo = p.Ativo,
                 Logradouro = p.Endereco.Logradouro,
                 Numero = p.Endereco.Numero,
                 Complemento = p.Endereco.Complemento,
@@ -43,9 +63,9 @@ namespace DoeAgasalhoApiV2._0.Repositories
             }).ToList();
         }
 
-        public PontoColeta Add(NovoPontoColetaModel novoPontoColeta)
+        public PontoColetaModel Add(PontoColetaCreateModel novoPontoColeta)
         {
-            var pontoColeta = new PontoColeta
+            var pontoColeta = new PontoColetaModel
             {
                 NomePonto = novoPontoColeta.NomePonto,
                 Ativo = "1"
@@ -53,7 +73,7 @@ namespace DoeAgasalhoApiV2._0.Repositories
 
             string complemento = string.IsNullOrWhiteSpace(novoPontoColeta.Complemento) ? null : novoPontoColeta.Complemento;
 
-            var endereco = new Endereco
+            var endereco = new EnderecoModel
             {
                 Logradouro = novoPontoColeta.Logradouro,
                 Numero = novoPontoColeta.Numero,
@@ -71,7 +91,7 @@ namespace DoeAgasalhoApiV2._0.Repositories
             return pontoColeta;
         }
 
-        public void Update(PontoColeta pontoColeta)
+        public void Update(PontoColetaModel pontoColeta)
         {
             _context.PontoColeta.Update(pontoColeta);
             _context.SaveChanges();

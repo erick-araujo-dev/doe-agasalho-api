@@ -6,21 +6,21 @@ namespace DoeAgasalhoApiV2._0.Repository.Interface
     public interface IUsuarioRepository
 
     {
-        List<Usuario> GetAll();
+        List<UsuarioModel> GetAll();
 
-        Usuario GetByEmail(string email);
+        UsuarioModel GetByEmail(string email);
 
-        List<Usuario> GetByActiveStatus(bool ativo);
+        List<UsuarioModel> GetByActiveStatus(bool ativo);
 
-        Usuario GetById(int id);
+        UsuarioModel GetById(int id);
 
-        Usuario GetByUserName(string name);
+        UsuarioModel GetByUserName(string name);
 
-        Usuario GetByEmailAndPassword(string email, string password);
+        UsuarioModel GetByEmailAndPassword(string email, string password);
 
-        Usuario Add(UsuarioCreateModel usuario);
+        UsuarioModel Add(UsuarioCreateModel usuario);
 
-        void Update(Usuario usuario);
+        void Update(UsuarioModel usuario);
 
         void ActivateUser(int userId);
 

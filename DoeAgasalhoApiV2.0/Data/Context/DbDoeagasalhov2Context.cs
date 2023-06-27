@@ -16,21 +16,21 @@ public partial class DbDoeagasalhov2Context : DbContext
     {
     }
 
-    public virtual DbSet<Doacao> Doacoes { get; set; }
+    public virtual DbSet<DoacaoModel> Doacoes { get; set; }
 
-    public virtual DbSet<Endereco> Enderecos { get; set; }
+    public virtual DbSet<EnderecoModel> Enderecos { get; set; }
 
-    public virtual DbSet<PontoColeta> PontoColeta { get; set; }
+    public virtual DbSet<PontoColetaModel> PontoColeta { get; set; }
 
-    public virtual DbSet<PontoProduto> PontoProdutos { get; set; }
+    public virtual DbSet<PontoProdutoModel> PontoProdutos { get; set; }
 
-    public virtual DbSet<Produto> Produtos { get; set; }
+    public virtual DbSet<ProdutoModel> Produtos { get; set; }
 
-    public virtual DbSet<Tamanho> Tamanhos { get; set; }
+    public virtual DbSet<TamanhoModel> Tamanhos { get; set; }
 
-    public virtual DbSet<Tipo> Tipos { get; set; }
+    public virtual DbSet<TipoModel> Tipos { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<UsuarioModel> Usuarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,7 +38,7 @@ public partial class DbDoeagasalhov2Context : DbContext
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
 
-        modelBuilder.Entity<Doacao>(entity =>
+        modelBuilder.Entity<DoacaoModel>(entity =>
         {
             entity.HasKey(e => new { e.Id, e.ProdutoId, e.UsuarioId })
                 .HasName("PRIMARY")
@@ -72,7 +72,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasConstraintName("fk_doacao_usuario1");
         });
 
-        modelBuilder.Entity<Endereco>(entity =>
+        modelBuilder.Entity<EnderecoModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -100,7 +100,7 @@ public partial class DbDoeagasalhov2Context : DbContext
             entity.Property(e => e.Numero).HasColumnName("numero");
         });
 
-        modelBuilder.Entity<PontoColeta>(entity =>
+        modelBuilder.Entity<PontoColetaModel>(entity =>
         {
             entity.HasKey(e => new { e.Id, e.EnderecoId })
                 .HasName("PRIMARY")
@@ -129,7 +129,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasConstraintName("fk_ponto_coleta_endereco1");
         });
 
-        modelBuilder.Entity<PontoProduto>(entity =>
+        modelBuilder.Entity<PontoProdutoModel>(entity =>
         {
             entity.HasKey(e => new { e.PontoColetaId, e.ProdutoId })
                 .HasName("PRIMARY")
@@ -150,7 +150,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasConstraintName("fk_ponto_coleta_has_produtos_produtos1");
         });
 
-        modelBuilder.Entity<Produto>(entity =>
+        modelBuilder.Entity<ProdutoModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -164,8 +164,8 @@ public partial class DbDoeagasalhov2Context : DbContext
             entity.Property(e => e.Ativo)
                 .HasMaxLength(1)
                 .HasColumnName("ativo");
-            entity.Property(e => e.Cor)
-                .HasMaxLength(30)
+            entity.Property(e => e.Caracteristica)
+                .HasMaxLength(50)
                 .HasColumnName("cor");
             entity.Property(e => e.Estoque).HasColumnName("estoque");
             entity.Property(e => e.Genero)
@@ -185,7 +185,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasConstraintName("fk_produtos_tipos1");
         });
 
-        modelBuilder.Entity<Tamanho>(entity =>
+        modelBuilder.Entity<TamanhoModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -199,7 +199,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<Tipo>(entity =>
+        modelBuilder.Entity<TipoModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -213,7 +213,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+        modelBuilder.Entity<UsuarioModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

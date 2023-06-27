@@ -12,17 +12,22 @@ namespace DoeAgasalhoApiV2._0.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IPontoColetaRepository _pontoColetaRepository;
+        private readonly IUtilsService _utilsService;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, IPontoColetaRepository pontoColetaRepository)
+
+        public UsuarioService(IUsuarioRepository usuarioRepository, IPontoColetaRepository pontoColetaRepository, IUtilsService utilsService)
         {
             _usuarioRepository = usuarioRepository;
             _pontoColetaRepository = pontoColetaRepository;
+            _utilsService = utilsService;
         }
 
-        public bool IsActiveUser(Usuario user)
+        public bool IsActiveUser(UsuarioModel user)
         {
             return user?.Ativo == "1";
         }
+
+        
 
         private bool _IsEmailAlreadyExists(string email)
         {
@@ -46,6 +51,11 @@ namespace DoeAgasalhoApiV2._0.Services
             {
                 throw new ArgumentException("O nome contém caracteres inválidos.");
             }
+
+            if (name.Length > 100)
+            {
+                throw new ArgumentException("O nome deve ter no máximo 100 caracteres.");
+            }
         }
 
         //Validacao email 
@@ -58,10 +68,13 @@ namespace DoeAgasalhoApiV2._0.Services
             {
                 throw new ArgumentException("O email fornecido é inválido.");
             }
+            if (email.Length > 255)
+            {
+                throw new ArgumentException("O email deve ter no máximo 255 caracteres.");
+            }
         }
-
-        //Valida senha
-        private void _ValidatePassword(string password)
+            //Valida senha
+            private void _ValidatePassword(string password)
         {
             // Verificar o comprimento mínimo de oito caracteres
             if (password.Length < 8)
@@ -87,6 +100,10 @@ namespace DoeAgasalhoApiV2._0.Services
             if (!password.Any(char.IsLower))
             {
                 throw new ArgumentException("A senha deve conter pelo menos uma letra minúscula.");
+            }
+            if (password.Length > 100)
+            {
+                throw new ArgumentException("A senha deve ter no máximo 100 caracteres.");
             }
         }
 
@@ -147,35 +164,19 @@ namespace DoeAgasalhoApiV2._0.Services
             }
         }
 
-        //Validacao Ativo
-        private void _ValidateActive(string ativo)
-        {
-            if (ativo != "1" && ativo != "0")
-            {
-                throw new ArgumentException("O valor do campo 'ativo' é inválido. Deve ser '1' ou '0'.");
-            }
-        }
-
         //Obter todos usuarios
-        public List<Usuario> GetAllUsers()
-        {
-            return _usuarioRepository.GetAll();
-        }
+        public List<UsuarioModel> GetAllUsers() => _usuarioRepository.GetAll();
 
         //Obter usuarios ativos
-        public List<Usuario> GetActiveUsers()
-        {
-            return _usuarioRepository.GetByActiveStatus(true);
-        }
+        public List<UsuarioModel> GetActiveUsers() => _usuarioRepository.GetByActiveStatus(true);
 
         //Obter usuarios desativados
-        public List<Usuario> GetInactiveUsers()
-        {
-            return _usuarioRepository.GetByActiveStatus(false);
-        }
+        public List<UsuarioModel> GetInactiveUsers() => _usuarioRepository.GetByActiveStatus(false);
+
+        //centraldeservicos
 
         // Add novo usuario
-        public Usuario CreateUser(UsuarioCreateModel user)
+        public UsuarioModel CreateUser(UsuarioCreateModel user)
 
         {
             if (_IsEmailAlreadyExists(user.Email))
@@ -193,8 +194,8 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
 
-        //Update username
-        public Usuario UpdateUsername(int id, int requestingUserId, UpdateUsernameModel user)
+        //Update username usuario 
+        public UsuarioModel UpdateUsername(int id, int requestingUserId, UpdateUsernameModel user)
         {
             var existingUser = _usuarioRepository.GetById(id);
 
@@ -217,11 +218,16 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Alterar ponto de coleta
-        public Usuario ChangeCollectPoint(int id, ChangeCollectPointModel user)
+        public UsuarioModel ChangeCollectPoint(int id, ChangeCollectPointModel user)
         {
             var existingUser = _usuarioRepository.GetById(id);
 
-            if(existingUser.Tipo == "admin")
+            if (existingUser == null)
+            {
+                throw new NotFoundException("Usuário não encontrado.");
+            }
+
+            if (existingUser.Tipo == "admin")
             {
                 throw new ArgumentException("Usuarios tipo admin não podem estar associados a pontos de coletas");
             }
@@ -238,7 +244,7 @@ namespace DoeAgasalhoApiV2._0.Services
 
             _ValidateCollectPoint(user);
 
-            existingUser.PontoColetaId = user.PontoColetaId;
+            existingUser.PontoColetaId = user?.PontoColetaId;
 
             _usuarioRepository.Update(existingUser);
             return existingUser;
@@ -247,7 +253,7 @@ namespace DoeAgasalhoApiV2._0.Services
 
 
         //Alteracao de senha
-        public Usuario ChangePassword(int id, ChangePasswordModel user, int requestingUserId)
+        public UsuarioModel ChangePassword(int id, ChangePasswordModel user, int requestingUserId)
         {
 
             if (id != requestingUserId)
@@ -278,7 +284,7 @@ namespace DoeAgasalhoApiV2._0.Services
             return existingUser;
         }
 
-        private bool _VerifyPassword(Usuario user, string password)
+        private bool _VerifyPassword(UsuarioModel user, string password)
         {
             return user.Senha == password;
         }
@@ -301,7 +307,7 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
             }
 
-            _ValidateActive(user.Ativo);
+            _utilsService.ValidateActive(user.Ativo);
 
             if (user.Ativo == "1")
             {
@@ -327,11 +333,11 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
             }
 
-            _ValidateActive(user.Ativo);
+            _utilsService.ValidateActive(user.Ativo);
 
             if (user.Ativo == "0")
             {
-                throw new InvalidOperationException("O usuário já está desativado.");
+                throw new InvalidOperationException("O usuário já está inativo.");
             }
 
             _usuarioRepository.DeactivateUser(id);

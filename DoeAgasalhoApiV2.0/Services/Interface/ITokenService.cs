@@ -4,6 +4,6 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 {
     public interface ITokenService
     {
-        public string GenerateToken(Usuario usuario);
+        public string GenerateToken(UsuarioModel usuario);
     }
 }

@@ -36,6 +36,7 @@ AuthenticationConfig.ConfigureAuthentication(builder.Services);
 //Classe com as configurações de Injecao de Depend.
 DependencyInjectionConfig.Configure(builder.Services);
 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

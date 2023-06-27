@@ -10,7 +10,7 @@ namespace DoeAgasalhoApiV2._0.Services
 {
     public class TokenService : ITokenService
     {
-        public string GenerateToken(Usuario usuario)
+        public string GenerateToken(UsuarioModel usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(SettingsHash.Secret);

@@ -7,25 +7,25 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 
     {
 
-        bool IsActiveUser(Usuario user);
+        bool IsActiveUser(UsuarioModel user);
 
-        Usuario CreateUser(UsuarioCreateModel usuario);
+        UsuarioModel CreateUser(UsuarioCreateModel usuario);
 
-        Usuario UpdateUsername(int id, int requestingUserId, UpdateUsernameModel usuario);
+        UsuarioModel UpdateUsername(int id, int requestingUserId, UpdateUsernameModel usuario);
 
-        Usuario ChangeCollectPoint(int id, ChangeCollectPointModel usuario);
+        UsuarioModel ChangeCollectPoint(int id, ChangeCollectPointModel usuario);
 
-        Usuario ChangePassword(int id, ChangePasswordModel user, int requestingUserId);
+        UsuarioModel ChangePassword(int id, ChangePasswordModel user, int requestingUserId);
 
         void ActivateUser(int id);
 
         void DeactivateUser(int id);
 
-        List<Usuario> GetAllUsers();
+        List<UsuarioModel> GetAllUsers();
 
-        List<Usuario> GetActiveUsers();
+        List<UsuarioModel> GetActiveUsers();
 
-        List<Usuario> GetInactiveUsers();
+        List<UsuarioModel> GetInactiveUsers();
 
     }
 }

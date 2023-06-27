@@ -6,28 +6,48 @@ namespace DoeAgasalhoApiV2._0.Services
 {
     public class EnderecoService : IEnderecoService
     {
-        public void ValidateAddress(int numero, string logradouro, string bairro, string cidade, string estado, string cep)
+        public void ValidateAddress(int numero, string logradouro, string complemento, string bairro, string cidade, string estado, string cep)
         {
-            if (numero < 0 || string.IsNullOrWhiteSpace(logradouro) || string.IsNullOrWhiteSpace(bairro)
-                || string.IsNullOrWhiteSpace(cidade) || string.IsNullOrWhiteSpace(estado)
-                || string.IsNullOrWhiteSpace(cep))
+            if (numero < 0)
             {
-                throw new ArgumentException("Todos os campos do endereço, exceto o complemento, devem ser preenchidos corretamente.");
+                throw new ArgumentException("O número do endereço deve ser um valor positivo.");
             }
 
-            // Abreviar se necessário
-            estado = _AbbreviateState(estado);
+            if (string.IsNullOrWhiteSpace(logradouro) || logradouro.Length > 50)
+            {
+                throw new ArgumentException("O logradouro do endereço deve ser preenchido e ter no máximo 50 caracteres.");
+            }
 
-            //Valida a sigla
-            _ValidateStateName(estado);
+            if (!string.IsNullOrWhiteSpace(complemento) && complemento.Length > 10)
+            {
+                throw new ArgumentException("O complemento do endereço deve ter no máximo 10 caracteres.");
+            }
 
-            //Formata o cep
-            _FormatZipCode(cep);
+            if (string.IsNullOrWhiteSpace(bairro) || bairro.Length > 50)
+            {
+                throw new ArgumentException("O bairro do endereço deve ser preenchido e ter no máximo 50 caracteres.");
+            }
+
+            if (string.IsNullOrWhiteSpace(cidade) || cidade.Length > 50)
+            {
+                throw new ArgumentException("A cidade do endereço deve ser preenchida e ter no máximo 50 caracteres.");
+            }
+
+            if (string.IsNullOrWhiteSpace(estado))
+            {
+                throw new ArgumentException("O estado do endereço deve ser preenchido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(cep))
+            {
+                throw new ArgumentException("O CEP do endereço deve ser preenchido.");
+            }
         }
 
-        private string _AbbreviateState(string estado)
+
+        public string AbbreviateState(string estado)
         {
-            if (estado.Length > 2)
+            if (estado.Trim().Length >= 3)
             {
                 switch (estado?.ToUpper())
                 {
@@ -89,10 +109,10 @@ namespace DoeAgasalhoApiV2._0.Services
                         return estado;
                 }
             }
-            return estado.ToUpper();
+            return estado.Trim().ToUpper();
         }
 
-        private void _ValidateStateName(string estado)
+        public void ValidateStateName(string estado)
         {
             var siglasValidas = new List<string> { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
             if (!siglasValidas.Contains(estado.ToUpper()))
@@ -102,7 +122,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
 
-        private string _FormatZipCode(string cep)
+        public string FormatZipCode(string cep)
         {
             if (!string.IsNullOrWhiteSpace(cep) && cep.Length == 8)
             {

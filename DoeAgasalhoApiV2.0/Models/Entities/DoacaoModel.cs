@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DoeAgasalhoApiV2._0.Models.Entities;
 
-public partial class Doacao
+public partial class DoacaoModel
 {
     public int Id { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Doacao
 
     public int UsuarioId { get; set; }
 
-    public virtual Produto Produto { get; set; } = null!;
+    public virtual ProdutoModel Produto { get; set; } = null!;
 
-    public virtual Usuario Usuario { get; set; } = null!;
+    public virtual UsuarioModel Usuario { get; set; } = null!;
 }

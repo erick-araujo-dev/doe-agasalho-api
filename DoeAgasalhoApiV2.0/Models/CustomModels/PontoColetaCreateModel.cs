@@ -6,7 +6,6 @@ namespace DoeAgasalhoApiV2._0.Models.CustomModels
     {
         public string NomePonto { get; set; }
 
-        [JsonIgnore]
         public string? Ativo { get; set; }
 
         public string Logradouro { get; set; }

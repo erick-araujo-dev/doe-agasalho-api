@@ -29,10 +29,6 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var users = _usuarioService.GetAllUsers();
                 return Ok(users);
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
             catch (Exception)
             {
                 return StatusCode(500, "Ocorreu um erro ao obter todos os usuários.");
@@ -48,10 +44,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var users = _usuarioService.GetActiveUsers();
                 return Ok(users);
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+           
             catch (Exception)
             {
                 return StatusCode(500, "Ocorreu um erro ao obter os usuários ativos.");
@@ -67,10 +60,6 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var users = _usuarioService.GetInactiveUsers();
                 return Ok(users);
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
             catch (Exception)
             {
                 return StatusCode(500, "Ocorreu um erro ao obter os usuários inativos.");
@@ -79,7 +68,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles = "admin")]
-        public ActionResult<Usuario> CreateNewUser(UsuarioCreateModel usuario)
+        public ActionResult<UsuarioModel> CreateNewUser(UsuarioCreateModel usuario)
         {
             try
             {
@@ -105,7 +94,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
         }
 
         [HttpPut("{id}/updateusername")]
-        public ActionResult<Usuario> UpdateUsername(int id, UpdateUsernameModel usuario)
+        public ActionResult<UsuarioModel> UpdateUsername(int id, UpdateUsernameModel usuario)
         {
             try
             {
@@ -134,16 +123,16 @@ namespace DoeAgasalhoApiV2._0.Controllers
 
         [HttpPut("{id}/changecollectpoint")]
         [Authorize(Roles = "admin")]
-        public ActionResult<Usuario> Change(int id, ChangeCollectPointModel usuario)
+        public ActionResult<UsuarioModel> Change(int id, ChangeCollectPointModel usuario)
         {
             try
             {
                 var updatedUser = _usuarioService.ChangeCollectPoint(id, usuario);
                 return Ok(updatedUser);
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Ponto de coleta não encontrado");
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -203,13 +192,13 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var response = new { success = true, message = "Usuário ativado com sucesso!" };
                 return Ok(response);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                return StatusCode(400, "Usuário já esta ativo");
+                return Conflict(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                return StatusCode(401, $"Erro de autorização: {ex.Message}");
+                return StatusCode(403, $"Erro de autorização: {ex.Message}");
             }
             catch (NotFoundException)
             {
@@ -235,9 +224,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var response = new { success = true, message = "Usuário desativado com sucesso!" };
                 return Ok(response);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                return StatusCode(400, "Usuário já esta ativo");
+                return Conflict(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {

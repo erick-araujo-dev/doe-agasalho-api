@@ -5,15 +5,17 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 {
     public interface IPontoColetaRepository
     {
-        PontoColeta GetById(int id);
+        PontoColetaModel GetById(int id);
 
-        PontoColeta GetByName(string name);
+        PontoColetaModel GetByName(string name);
+
+        List<NovoPontoColetaModel> GetByActiveStatus(bool ativo);
 
         List<NovoPontoColetaModel> GetAll();
-        
-        PontoColeta Add(NovoPontoColetaModel novoPontoColeta);
 
-        void Update(PontoColeta pontoColeta);
+        PontoColetaModel Add(NovoPontoColetaModel novoPontoColeta);
+
+        void Update(PontoColetaModel pontoColeta);
 
         void ActivateCollectPoint(int id);
 
