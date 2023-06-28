@@ -2,7 +2,7 @@
 
 namespace DoeAgasalhoApiV2._0.Models.CustomModels
 {
-    public class NovoPontoColetaModel
+    public class PontoColetaCreateModel
     {
         public string NomePonto { get; set; }
 

@@ -35,13 +35,13 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Obter todos pontos de 
-        public List<NovoPontoColetaModel> GetAllCollectPoint() => _pontoColetaRepository.GetAll();
+        public List<PontoColetaCreateModel> GetAllCollectPoint() => _pontoColetaRepository.GetAll();
 
         //Obter pontos de coleta ativos
-        public List<NovoPontoColetaModel> GetActivateCollectPoint() => _pontoColetaRepository.GetByActiveStatus(true);
+        public List<PontoColetaCreateModel> GetActivateCollectPoint() => _pontoColetaRepository.GetByActiveStatus(true);
 
         //Obter pontos de coletas desativados
-        public List<NovoPontoColetaModel> GetInactiveCollectPoint() => _pontoColetaRepository.GetByActiveStatus(false);
+        public List<PontoColetaCreateModel> GetInactiveCollectPoint() => _pontoColetaRepository.GetByActiveStatus(false);
 
         public bool IsActiveCollectPoint(UsuarioModel user)
         {
@@ -66,7 +66,7 @@ namespace DoeAgasalhoApiV2._0.Services
             return false;
         }
 
-        public PontoColetaModel CreateCollectPoint(NovoPontoColetaModel novoPontoColeta)
+        public PontoColetaModel CreateCollectPoint(PontoColetaCreateModel novoPontoColeta)
         {
             _ValidateCollectPointName(novoPontoColeta.NomePonto);
 
@@ -94,11 +94,8 @@ namespace DoeAgasalhoApiV2._0.Services
         public PontoColetaModel UpdateUsername(int id, UpdateUsernameModel pontoColeta)
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
+            _ = collectPoint ?? throw new NotFoundException("Ponto de Coleta não encontrado.");
 
-            if (collectPoint == null)
-            {
-                throw new NotFoundException("Ponto de coleta não encontrado.");
-            }
 
             _ValidateCollectPointName(pontoColeta.Nome);
 
@@ -113,11 +110,7 @@ namespace DoeAgasalhoApiV2._0.Services
         public void ActivateCollectPoint(int id)
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
-
-            if (collectPoint == null)
-            {
-                throw new NotFoundException("Ponto de Coleta não encontrado.");
-            }
+            _ = collectPoint ?? throw new NotFoundException("Ponto de Coleta não encontrado.");
 
             _utilsService.ValidateActive(collectPoint.Ativo);
 
@@ -135,10 +128,7 @@ namespace DoeAgasalhoApiV2._0.Services
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
 
-            if (collectPoint == null)
-            {
-                throw new NotFoundException("Ponto de Coleta não encontrado.");
-            }
+            _ = collectPoint ?? throw new NotFoundException("Ponto de Coleta não encontrado.");
 
             _utilsService.ValidateActive(collectPoint.Ativo);
 

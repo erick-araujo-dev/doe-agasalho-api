@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public string TipoMovimento { get; set; };
+        public string TipoMovimento { get; set; }
 
         public DateOnly DataMovimento { get; set; }
 

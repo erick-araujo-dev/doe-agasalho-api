@@ -3,6 +3,7 @@ using System;
 using DoeAgasalhoApiV2._0.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoeAgasalhoApiV2._0.Migrations
 {
     [DbContext(typeof(DbDoeagasalhov2Context))]
-    partial class DbDoeagasalhov2ContextModelSnapshot : ModelSnapshot
+    [Migration("20230627172024_AddColumnAtivoTipo")]
+    partial class AddColumnAtivoTipo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
 
             MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8mb3");
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.DoacaoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Doacao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +64,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("doacao", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.EnderecoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Endereco", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +116,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("endereco", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoColetaModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoColeta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,7 +150,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("ponto_coleta", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoProdutoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoProduto", b =>
                 {
                     b.Property<int>("PontoColetaId")
                         .HasColumnType("int")
@@ -168,7 +171,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("ponto_produto", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.ProdutoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Produto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -181,11 +184,11 @@ namespace DoeAgasalhoApiV2._0.Migrations
                         .HasColumnType("varchar(1)")
                         .HasColumnName("ativo");
 
-                    b.Property<string>("Caracteristica")
+                    b.Property<string>("Cor")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("caracteristica");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("cor");
 
                     b.Property<int>("Estoque")
                         .HasColumnType("int")
@@ -214,7 +217,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("produto", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.TamanhoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Tamanho", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,16 +238,12 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("tamanho", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.TipoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Tipo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    b.Property<string>("Ativo")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(20)
@@ -261,7 +260,7 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("tipo", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.UsuarioModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -314,15 +313,15 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.ToTable("usuario", (string)null);
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.DoacaoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Doacao", b =>
                 {
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.ProdutoModel", "Produto")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Produto", "Produto")
                         .WithMany("Doacoes")
                         .HasForeignKey("ProdutoId")
                         .IsRequired()
                         .HasConstraintName("fk_doacao_produto1");
 
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.UsuarioModel", "Usuario")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Usuario", "Usuario")
                         .WithMany("Doacoes")
                         .HasForeignKey("UsuarioId")
                         .IsRequired()
@@ -333,9 +332,9 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoColetaModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoColeta", b =>
                 {
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.EnderecoModel", "Endereco")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Endereco", "Endereco")
                         .WithMany("PontoColeta")
                         .HasForeignKey("EnderecoId")
                         .IsRequired()
@@ -344,9 +343,9 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.Navigation("Endereco");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoProdutoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.PontoProduto", b =>
                 {
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.ProdutoModel", "Produto")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Produto", "Produto")
                         .WithMany("PontoProdutos")
                         .HasForeignKey("ProdutoId")
                         .IsRequired()
@@ -355,15 +354,15 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.Navigation("Produto");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.ProdutoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Produto", b =>
                 {
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.TamanhoModel", "Tamanho")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Tamanho", "Tamanho")
                         .WithMany("Produtos")
                         .HasForeignKey("TamanhoId")
                         .IsRequired()
                         .HasConstraintName("fk_produtos_tamanhos1");
 
-                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.TipoModel", "Tipo")
+                    b.HasOne("DoeAgasalhoApiV2._0.Models.Entities.Tipo", "Tipo")
                         .WithMany("Produtos")
                         .HasForeignKey("TipoId")
                         .IsRequired()
@@ -374,29 +373,29 @@ namespace DoeAgasalhoApiV2._0.Migrations
                     b.Navigation("Tipo");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.EnderecoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Endereco", b =>
                 {
                     b.Navigation("PontoColeta");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.ProdutoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Produto", b =>
                 {
                     b.Navigation("Doacoes");
 
                     b.Navigation("PontoProdutos");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.TamanhoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Tamanho", b =>
                 {
                     b.Navigation("Produtos");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.TipoModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Tipo", b =>
                 {
                     b.Navigation("Produtos");
                 });
 
-            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.UsuarioModel", b =>
+            modelBuilder.Entity("DoeAgasalhoApiV2._0.Models.Entities.Usuario", b =>
                 {
                     b.Navigation("Doacoes");
                 });

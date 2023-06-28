@@ -7,13 +7,13 @@ namespace DoeAgasalhoApiV2._0.Services
     {
         bool IsActiveCollectPoint(UsuarioModel user);
 
-        List<NovoPontoColetaModel> GetAllCollectPoint();
+        List<PontoColetaCreateModel> GetAllCollectPoint();
 
-        List<NovoPontoColetaModel> GetActivateCollectPoint();
+        List<PontoColetaCreateModel> GetActivateCollectPoint();
 
-        List<NovoPontoColetaModel> GetInactiveCollectPoint();
+        List<PontoColetaCreateModel> GetInactiveCollectPoint();
 
-        PontoColetaModel CreateCollectPoint(NovoPontoColetaModel novoPontoColeta);
+        PontoColetaModel CreateCollectPoint(PontoColetaCreateModel novoPontoColeta);
 
         PontoColetaModel UpdateUsername(int id, UpdateUsernameModel pontoColeta);
 

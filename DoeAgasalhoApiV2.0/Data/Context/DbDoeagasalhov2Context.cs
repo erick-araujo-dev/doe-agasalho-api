@@ -166,7 +166,7 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasColumnName("ativo");
             entity.Property(e => e.Caracteristica)
                 .HasMaxLength(50)
-                .HasColumnName("cor");
+                .HasColumnName("caracteristica");
             entity.Property(e => e.Estoque).HasColumnName("estoque");
             entity.Property(e => e.Genero)
                 .HasColumnType("enum('M','F','U')")
@@ -211,6 +211,12 @@ public partial class DbDoeagasalhov2Context : DbContext
             entity.Property(e => e.Nome)
                 .HasMaxLength(20)
                 .HasColumnName("nome");
+
+            entity.Property(e => e.Ativo)
+                .HasMaxLength(1)
+                .HasColumnName("ativo");
+
+
         });
 
         modelBuilder.Entity<UsuarioModel>(entity =>

@@ -8,9 +8,9 @@
 
         public string Caracteristica { get; set; } = null!;
 
-        public int TamanhoId { get; set; }
+        public string Tamanho { get; set; }
 
-        public int TipoId { get; set; }
+        public string Tipo { get; set; }
 
         public string Genero { get; set; } = null!;
 

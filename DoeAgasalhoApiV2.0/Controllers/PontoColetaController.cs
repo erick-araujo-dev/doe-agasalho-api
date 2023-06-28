@@ -66,7 +66,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
 
 
         [HttpPost("create")]
-        public ActionResult<PontoColetaModel> Create(NovoPontoColetaModel novoPontoColeta)
+        public ActionResult<PontoColetaModel> Create(PontoColetaCreateModel novoPontoColeta)
         {
             try
             {

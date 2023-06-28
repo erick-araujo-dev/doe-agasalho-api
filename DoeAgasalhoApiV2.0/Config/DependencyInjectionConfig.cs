@@ -14,12 +14,17 @@ namespace DoeAgasalhoApiV2._0.Config
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();            
             services.AddScoped<IPontoColetaRepository, PontoColetaRepository>();            
             services.AddScoped<IProdutoRepository, ProdutoRepository>();            
+            services.AddScoped<ITamanhoRepository, TamanhoRepository>();            
+            services.AddScoped<ITipoRepository, TipoRepository>();            
             services.AddScoped<IPontoColetaService, PontoColetaService>();            
             services.AddScoped<IUsuarioService, UsuarioService>();            
             services.AddScoped<ILoginService, LoginService>();            
             services.AddScoped<ITokenService, TokenService>();            
             services.AddScoped<IEnderecoService, EnderecoService>();
             services.AddScoped<IUtilsService, UtilsService>();
+            services.AddScoped<IProdutoService, ProdutoService>();
+            services.AddScoped<ITamanhoService, TamanhoService>();
+            services.AddScoped<ITipoService, TipoService>();
 
         }
     }

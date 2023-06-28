@@ -157,10 +157,7 @@ namespace DoeAgasalhoApiV2._0.Services
             if (createUserModel.PontoColetaId.HasValue)
             {
                 var pontoColeta = _pontoColetaRepository.GetById(createUserModel.PontoColetaId.Value);
-                if (pontoColeta == null)
-                {
-                    throw new NotFoundException("Ponto de coleta não encontrado.");
-                }
+                _ = pontoColeta ?? throw new NotFoundException("Ponto de coleta não encontrado.");
             }
         }
 
@@ -198,11 +195,7 @@ namespace DoeAgasalhoApiV2._0.Services
         public UsuarioModel UpdateUsername(int id, int requestingUserId, UpdateUsernameModel user)
         {
             var existingUser = _usuarioRepository.GetById(id);
-
-            if (existingUser == null)
-            {
-                throw new NotFoundException("Usuário não encontrado.");
-            }
+            _ = existingUser ?? throw new NotFoundException("Usuário não encontrado.");
 
             if (requestingUserId != existingUser.Id)
             {
@@ -221,11 +214,7 @@ namespace DoeAgasalhoApiV2._0.Services
         public UsuarioModel ChangeCollectPoint(int id, ChangeCollectPointModel user)
         {
             var existingUser = _usuarioRepository.GetById(id);
-
-            if (existingUser == null)
-            {
-                throw new NotFoundException("Usuário não encontrado.");
-            }
+            _ = existingUser ?? throw new NotFoundException("Usuário não encontrado.");
 
             if (existingUser.Tipo == "admin")
             {
@@ -262,11 +251,8 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             var existingUser = _usuarioRepository.GetById(id);
+            _ = existingUser ?? throw new NotFoundException("Usuário não encontrado.");
 
-            if (existingUser == null)
-            {
-                throw new NotFoundException("Usuário não encontrado.");
-            }
 
             // Verificar se a senha atual fornecida corresponde à senha do usuário
             if (!_VerifyPassword(existingUser, user.SenhaAtual))
@@ -296,11 +282,8 @@ namespace DoeAgasalhoApiV2._0.Services
         public void ActivateUser(int id)
         {
             var user = _usuarioRepository.GetById(id);
+            _ = user ?? throw new NotFoundException("Usuário não encontrado.");
 
-            if (user == null)
-            {
-                throw new NotFoundException("Usuário não encontrado.");
-            }
 
             if (user.Tipo == "admin")
             {
@@ -322,11 +305,8 @@ namespace DoeAgasalhoApiV2._0.Services
         public void DeactivateUser(int id)
         {
             var user = _usuarioRepository.GetById(id);
+            _ = user ?? throw new NotFoundException("Usuário não encontrado.");
 
-            if (user == null)
-            {
-                throw new NotFoundException("Usuário não encontrado.");
-            }
 
             if (user.Tipo == "admin")
             {

@@ -1,5 +1,6 @@
 ﻿using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoeAgasalhoApiV2._0.Repositories.Interface
 {
@@ -11,18 +12,20 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         List<ProdutoModel> GetProductInactive();
 
-        ProdutoModel GetById(int id);
+        ProdutoModel GetSingleByFilter(Func<ProdutoModel, bool> filter);
 
-        ProdutoModel GetByStyle(string caracteristica);
+        List<ProdutoModel> GetAllByFilter(Func<ProdutoModel, bool> filter);
 
-        ProdutoModel Add(ProdutoCreateModel product);
+        List<ProdutoModel> GetFilteredProducts(int? tipoId, int? tamanhoId, string genero, string caracteristica);
 
-        void Update(ProdutoModel usuario);
+        ProdutoModel Add(ProdutoModel product);
+
+        void Update(ProdutoModel product);
 
         void ActivateProduct(int productId);
 
         void DeactivateProduct(int productId);
 
-        //parei aqui, 26/06/2023 
+        List<string> GetCharacteristicsByFilter(int tipoId, int tamanhoId);
     }
 }

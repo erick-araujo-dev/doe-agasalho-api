@@ -9,5 +9,7 @@ public partial class TipoModel
 
     public string? Nome { get; set; }
 
+    public string Ativo { get; set; }
+
     public virtual ICollection<ProdutoModel> Produtos { get; set; } = new List<ProdutoModel>();
 }
