@@ -2,7 +2,7 @@
 
 namespace DoeAgasalhoApiV2._0.Models.Custom_Models
 {
-    public class UpdateProductModel
+    public class UpdateProdutoModel
     {
         [JsonIgnore]
         public int Id { get; set; }

@@ -11,11 +11,11 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 
         UsuarioModel CreateUser(UsuarioCreateModel usuario);
 
-        UsuarioModel UpdateUsername(int id, int requestingUserId, UpdateUsernameModel usuario);
+        UsuarioModel UpdateUsername(int id, UpdateUsernameModel user);
 
         UsuarioModel ChangeCollectPoint(int id, ChangeCollectPointModel usuario);
 
-        UsuarioModel ChangePassword(int id, ChangePasswordModel user, int requestingUserId);
+        UsuarioModel ChangePassword(int id, ChangePasswordModel user);
 
         void ActivateUser(int id);
 
@@ -26,6 +26,5 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
         List<UsuarioModel> GetActiveUsers();
 
         List<UsuarioModel> GetInactiveUsers();
-
     }
 }

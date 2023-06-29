@@ -3,6 +3,7 @@ using System;
 using DoeAgasalhoApiV2._0.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoeAgasalhoApiV2._0.Migrations
 {
     [DbContext(typeof(DbDoeagasalhov2Context))]
-    partial class DbDoeagasalhov2ContextModelSnapshot : ModelSnapshot
+    [Migration("20230628150616_alter_type_dataMovimento_Doacao")]
+    partial class alter_type_dataMovimento_Doacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,8 +1,5 @@
 ﻿using DoeAgasalhoApiV2._0.Exceptions;
 using DoeAgasalhoApiV2._0.Models.CustomModels;
-using DoeAgasalhoApiV2._0.Repositories.Interface;
-using DoeAgasalhoApiV2._0.Repository.Interface;
-using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,65 +10,47 @@ namespace DoeAgasalhoApiV2._0.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILoginService _loginService;
-        private readonly IUsuarioService _usuarioService;
         private readonly ITokenService _tokenService;
-        private readonly IPontoColetaService _pontoColetaService;
 
-        public LoginController(IUsuarioRepository usuarioRepository, ILoginService loginService, IUsuarioService usuarioService, ITokenService tokenService, IPontoColetaService pontoColetaService)
+        public LoginController(ILoginService loginService, ITokenService tokenService)
         {
-            _usuarioRepository = usuarioRepository;
             _loginService = loginService;
-            _usuarioService = usuarioService;
-            _tokenService = tokenService;
-            _pontoColetaService = pontoColetaService;   
+            _tokenService = tokenService;   
         }
 
         [HttpPost]
         [Route("signin")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] LoginModel model)
+        public async Task<ActionResult<dynamic>> Auth(LoginModel model)
         {
-            var usuario = _usuarioRepository.GetByEmailAndPassword(model.Email, model.Senha);
-
-            //Verifica se usuario esta ativo
-            
-
-            if (usuario == null || !_loginService.VerifyPassword(model.Senha, usuario.Senha))
-            {
-                return NotFound(new { Message = "Usuário ou senha inválidos!" });
-            }
-
-            if (!_usuarioService.IsActiveUser(usuario))
-            {
-                return Unauthorized(new { Message = "Usuário inativo. Entre em contato com o administrador." });
-            }
-
             try
             {
-                //Verifica se o ponto de coleta do usuario esta ativo, se estiver inativo não conseguirá fazer login
-                if (!_pontoColetaService.IsActiveCollectPoint(usuario) && usuario.Tipo != "admin")
+                var usuario = _loginService.Authenticate(model);
+
+                // Gera o token e esconde a senha
+                var token = _tokenService.GenerateToken(usuario);
+                usuario.Senha = "";
+
+                return new
                 {
-                    return NotFound(new { Message = "Você não está associado a nenhum ponto de coleta, contate o administrador." });
-                }
+                    usuario = usuario,
+                    token = token,
+                    usuarioId = usuario.Id
+                };
             }
-            catch (BusinessOperationException ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return StatusCode(404, ex.Message);
             }
-
-
-
-            //Gera o token e esconde a senha
-            var token = _tokenService.GenerateToken(usuario);
-            usuario.Senha = "";
-            return new
+            catch (InvalidOperationException ex)
             {
-                usuario = usuario,
-                token = token,
-                idUsuario = usuario.Id
-            };
+                return StatusCode(400, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
     }

@@ -28,8 +28,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
 });
 
+// Register the IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
-//Classe de config da autenticacai JWT
+//Classe de config da autenticacao JWT
 AuthenticationConfig.ConfigureAuthentication(builder.Services);
 
 

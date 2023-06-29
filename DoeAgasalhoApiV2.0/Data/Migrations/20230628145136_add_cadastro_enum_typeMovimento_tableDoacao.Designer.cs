@@ -3,6 +3,7 @@ using System;
 using DoeAgasalhoApiV2._0.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoeAgasalhoApiV2._0.Migrations
 {
     [DbContext(typeof(DbDoeagasalhov2Context))]
-    partial class DbDoeagasalhov2ContextModelSnapshot : ModelSnapshot
+    [Migration("20230628145136_add_cadastro_enum_typeMovimento_tableDoacao")]
+    partial class add_cadastro_enum_typeMovimento_tableDoacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +40,8 @@ namespace DoeAgasalhoApiV2._0.Migrations
                         .HasColumnType("int")
                         .HasColumnName("usuario_id");
 
-                    b.Property<DateTime>("DataMovimento")
-                        .HasColumnType("datetime")
+                    b.Property<DateOnly>("DataMovimento")
+                        .HasColumnType("date")
                         .HasColumnName("data_movimento");
 
                     b.Property<int?>("Quantidade")

@@ -18,8 +18,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         List<ProdutoModel> GetFilteredProducts(int? tipoId, int? tamanhoId, string genero, string caracteristica);
 
-        ProdutoModel Add(ProdutoModel product);
-
         void Update(ProdutoModel product);
 
         void ActivateProduct(int productId);
@@ -27,5 +25,9 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
         void DeactivateProduct(int productId);
 
         List<string> GetCharacteristicsByFilter(int tipoId, int tamanhoId);
+
+        ProdutoModel Add(ProdutoModel product, int collectPointId, int userId);
+
+        List<ProdutoModel> GetProdutosByPontoColetaId(int pontoColetaId);
     }
 }

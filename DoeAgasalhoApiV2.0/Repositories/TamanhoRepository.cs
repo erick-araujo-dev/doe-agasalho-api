@@ -1,7 +1,6 @@
 ﻿using DoeAgasalhoApiV2._0.Data.Context;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Services.Interface;
-using Microsoft.EntityFrameworkCore;
 
 namespace DoeAgasalhoApiV2._0.Services
 {
@@ -22,6 +21,7 @@ namespace DoeAgasalhoApiV2._0.Services
             };
             _context.Tamanhos.Add(newSize);
             _context.SaveChanges();
+
             return newSize;
         }
 

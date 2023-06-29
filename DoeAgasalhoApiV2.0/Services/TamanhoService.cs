@@ -1,6 +1,6 @@
-﻿using DoeAgasalhoApiV2._0.Models.Entities;
+﻿using DoeAgasalhoApiV2._0.Exceptions;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Services.Interface;
-using System.Drawing;
 
 namespace DoeAgasalhoApiV2._0.Services
 {
@@ -10,12 +10,13 @@ namespace DoeAgasalhoApiV2._0.Services
 
         public TamanhoService(ITamanhoRepository tamanhoRepository)
         {
-            tamanhoRepository = _tamanhoRepository;
+            _tamanhoRepository = tamanhoRepository;
         }
 
-        public TamanhoModel? CreateNewSize(string tamanho)
+        public TamanhoModel CreateNewSize(string size)
         {
-            throw new NotImplementedException();
+            var newSize = _tamanhoRepository.Add(size);
+            return newSize;
         }
         public List<TamanhoModel> GetSizesByFilter(int? type, string characteristic)
         {

@@ -55,10 +55,12 @@ public partial class DbDoeagasalhov2Context : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.ProdutoId).HasColumnName("produto_id");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
-            entity.Property(e => e.DataMovimento).HasColumnName("data_movimento");
+            entity.Property(e => e.DataMovimento)
+                .HasColumnName("data_movimento")
+                .HasColumnType("datetime");
             entity.Property(e => e.Quantidade).HasColumnName("quantidade");
             entity.Property(e => e.TipoMovimento)
-                .HasColumnType("enum('entrada','saida')")
+                .HasColumnType("enum('entrada','saida', 'cadastro')")
                 .HasColumnName("tipo_movimento");
 
             entity.HasOne(d => d.Produto).WithMany(p => p.Doacoes)

@@ -14,12 +14,15 @@ namespace DoeAgasalhoApiV2._0.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IUtilsService _utilsService;
 
 
-        public UsuarioController(IUsuarioService usuarioService)
+        public UsuarioController(IUsuarioService usuarioService, IUtilsService utilsService)
         {
             _usuarioService = usuarioService;
+            _utilsService = utilsService;   
         }
+
         [HttpGet("all")]
         [Authorize(Roles = "admin")]
         public IActionResult GetAllUsers()
@@ -75,17 +78,17 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 var newUser = _usuarioService.CreateUser(usuario);
                 return Ok(newUser);
             }
-            catch (BusinessOperationException)
+            catch (BusinessOperationException ex)
             {
-                return StatusCode(409, "O email fornecido já está sendo utilizado por outro usuário. Por favor, utilize outro email.");
+                return StatusCode(409, ex.Message);
             }
             catch (ArgumentException ex)
             {
                 return StatusCode(400, $"Tipo de dado inválido: {ex.Message}");
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Ponto de coleta não encontrado");
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {
@@ -98,9 +101,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
         {
             try
             {
-                var requestingUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                int requestingUserId = int.Parse(requestingUserIdClaim.Value);
-                var updatedUser = _usuarioService.UpdateUsername(id, requestingUserId, usuario);
+                var updatedUser = _usuarioService.UpdateUsername(id, usuario);
                 return Ok(updatedUser);
             }
             catch (UnauthorizedAccessException ex)
@@ -111,9 +112,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return StatusCode(400, $"Tipo de dado inválido: {ex.Message}");
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Usuario não encontrado");
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {
@@ -154,15 +155,12 @@ namespace DoeAgasalhoApiV2._0.Controllers
         {
             try
             {
-                var requestingUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                int requestingUserId = int.Parse(requestingUserIdClaim.Value);
-
-                var updatedUser = _usuarioService.ChangePassword(id, user, requestingUserId);
+                var updatedUser = _usuarioService.ChangePassword(id, user);
                 return Ok(updatedUser);
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Usuario não encontrado");
+                return NotFound(ex.Message);
             }
             catch (InvalidOperationException ex)
             {
@@ -200,9 +198,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return StatusCode(403, $"Erro de autorização: {ex.Message}");
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Usuário não encontrado");
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -232,9 +230,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return StatusCode(403, $"Erro de autorização: {ex.Message}");
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return StatusCode(404, "Usuário não encontrado");
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -245,7 +243,6 @@ namespace DoeAgasalhoApiV2._0.Controllers
                 return StatusCode(500, "Ocorreu um erro ao ativar o usuário.");
             }
         }
-
     }
 }
 

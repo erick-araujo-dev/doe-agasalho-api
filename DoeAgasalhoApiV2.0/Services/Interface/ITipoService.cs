@@ -4,7 +4,7 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 {
     public interface ITipoService
     {
-        TipoModel? CreateNewType(string tipo);
+        TipoModel CreateNewType(string type);
 
         List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId);
     }

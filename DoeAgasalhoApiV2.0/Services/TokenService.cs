@@ -21,7 +21,7 @@ namespace DoeAgasalhoApiV2._0.Services
                     new Claim(ClaimTypes.Name, usuario.Nome.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                     new Claim(ClaimTypes.Role, usuario.Tipo.ToString()),
-
+                    new Claim(ClaimTypes.Locality, usuario.PontoColetaId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

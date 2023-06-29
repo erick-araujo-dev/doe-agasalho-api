@@ -1,7 +1,11 @@
-﻿namespace DoeAgasalhoApiV2._0.Services.Interface
+﻿using DoeAgasalhoApiV2._0.Models.CustomModels;
+using DoeAgasalhoApiV2._0.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DoeAgasalhoApiV2._0.Services.Interface
 {
     public interface ILoginService
     {
-        bool VerifyPassword(string typedPassword, string storedPassword);
+        UsuarioModel Authenticate(LoginModel model);
     }
 }

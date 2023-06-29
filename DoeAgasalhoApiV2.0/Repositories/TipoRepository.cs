@@ -1,8 +1,6 @@
 ﻿using DoeAgasalhoApiV2._0.Data.Context;
-using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
-using Microsoft.EntityFrameworkCore;
 
 namespace DoeAgasalhoApiV2._0.Services
 {

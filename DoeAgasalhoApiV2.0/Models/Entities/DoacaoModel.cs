@@ -9,7 +9,7 @@ public partial class DoacaoModel
 
     public string TipoMovimento { get; set; } = null!;
 
-    public DateOnly DataMovimento { get; set; }
+    public DateTime DataMovimento { get; set; }
 
     public int? Quantidade { get; set; }
 
