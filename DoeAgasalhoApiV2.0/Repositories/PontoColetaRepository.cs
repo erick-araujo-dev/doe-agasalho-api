@@ -15,6 +15,11 @@ namespace DoeAgasalhoApiV2._0.Repositories
             _context = context;
         }
 
+        public bool IsProdutoAssociated(int produtoId, int pontoColetaId)
+        {
+            return _context.PontoProdutos.Any(pp => pp.ProdutoId == produtoId && pp.PontoColetaId == pontoColetaId);
+        }
+
         public PontoColetaModel GetById(int id)
         {
             return _context.PontoColeta.FirstOrDefault(p => p.Id == id);

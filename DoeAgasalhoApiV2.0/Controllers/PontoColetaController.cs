@@ -107,7 +107,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("{id}/activate")]
+        [HttpPut("{id}/activate")]
         public IActionResult Activate(int id)
         {
             try
@@ -134,7 +134,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("{id}/deactivate")]
+        [HttpPut("{id}/deactivate")]
         public IActionResult Deactivate(int id)
         {
             try

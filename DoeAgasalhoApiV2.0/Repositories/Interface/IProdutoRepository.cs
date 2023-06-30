@@ -1,4 +1,5 @@
-﻿using DoeAgasalhoApiV2._0.Models.CustomModels;
+﻿using DoeAgasalhoApiV2._0.Models.Custom_Models;
+using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,12 +7,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 {
     public interface IProdutoRepository
     {
-        List<ProdutoModel> GetAll();
-
-        List<ProdutoModel> GetProductActive();
-
-        List<ProdutoModel> GetProductInactive();
-
         ProdutoModel GetSingleByFilter(Func<ProdutoModel, bool> filter);
 
         List<ProdutoModel> GetAllByFilter(Func<ProdutoModel, bool> filter);
@@ -28,6 +23,10 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         ProdutoModel Add(ProdutoModel product, int collectPointId, int userId);
 
-        List<ProdutoModel> GetProdutosByPontoColetaId(int pontoColetaId);
+        List<ProdutoViewModel> GetProdutosByPontoColeta(int pontoColetaId, string ativo = null);
+
+        ProdutoModel GetById(int produtoId);
+
+        //void AtualizarEstoque(int produtoId, int quantidade, string tipoOperacao);
     }
 }

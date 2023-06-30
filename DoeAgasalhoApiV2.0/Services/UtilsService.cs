@@ -96,6 +96,19 @@ namespace DoeAgasalhoApiV2._0.Services
             throw new UnauthorizedAccessException("ID do usuário não encontrado no token.");
         }
 
+        //Verifica se o produto esta associado ao ponto de coleta do usuario auth, se nao, lanca um 404
+        public void VerifyProductAssociation(int productId)
+        {
+            var collectPointId = GetPontoColetaIdFromToken();
+
+            var isAssociatedCollectPoint = _pontoColetaRepository.IsProdutoAssociated(productId, collectPointId);
+
+            if (!isAssociatedCollectPoint)
+            {
+                throw new NotFoundException("Produto não encontrado.");
+            }
+        }
+
 
     }
 

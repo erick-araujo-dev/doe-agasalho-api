@@ -16,6 +16,7 @@ namespace DoeAgasalhoApiV2._0.Config
             services.AddScoped<IProdutoRepository, ProdutoRepository>();            
             services.AddScoped<ITamanhoRepository, TamanhoRepository>();            
             services.AddScoped<ITipoRepository, TipoRepository>();            
+            services.AddScoped<IDoacaoRepository, DoacaoRepository>();            
             services.AddScoped<IPontoColetaService, PontoColetaService>();            
             services.AddScoped<IUsuarioService, UsuarioService>();            
             services.AddScoped<ILoginService, LoginService>();            
@@ -25,6 +26,7 @@ namespace DoeAgasalhoApiV2._0.Config
             services.AddScoped<IProdutoService, ProdutoService>();
             services.AddScoped<ITamanhoService, TamanhoService>();
             services.AddScoped<ITipoService, TipoService>();
+            services.AddScoped<IDoacaoService, DoacaoService>();
 
         }
     }

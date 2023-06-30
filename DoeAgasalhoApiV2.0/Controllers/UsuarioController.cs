@@ -150,7 +150,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
 
         }
 
-        [HttpPost("{id}/changepassword")]
+        [HttpPut("{id}/changepassword")]
         public IActionResult ChangePassword(int id, [FromBody] ChangePasswordModel user)
         {
             try
@@ -180,7 +180,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("{id}/activate")]
+        [HttpPut("{id}/activate")]
         [Authorize(Roles = "admin")]
         public IActionResult ActivateUser(int id)
         {
@@ -212,7 +212,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("{id}/deactivate")]
+        [HttpPut("{id}/deactivate")]
         [Authorize(Roles = "admin")]
         public IActionResult DeactivateUser(int id)
         {

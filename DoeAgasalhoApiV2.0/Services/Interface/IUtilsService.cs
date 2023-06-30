@@ -9,5 +9,6 @@
         void ValidateActive(string active);
 
         void ValidateStringField(string value, string field, int maxLength, bool isNumeric);
+        void VerifyProductAssociation(int productId);
     }
 }

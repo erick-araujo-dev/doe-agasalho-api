@@ -1,6 +1,8 @@
 ﻿using DoeAgasalhoApiV2._0.Data.Context;
+using DoeAgasalhoApiV2._0.Models.Custom_Models;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoeAgasalhoApiV2._0.Repositories
 {
@@ -20,6 +22,17 @@ namespace DoeAgasalhoApiV2._0.Repositories
             if (product != null)
             {
                 product.Ativo = "1";
+                _context.SaveChanges();
+            }
+        }
+
+        //Desativa um produto
+        public void DeactivateProduct(int productId)
+        {
+            var product = _context.Produtos.FirstOrDefault(p => p.Id == productId);
+            if (product != null)
+            {
+                product.Ativo = "0";
                 _context.SaveChanges();
             }
         }
@@ -57,7 +70,7 @@ namespace DoeAgasalhoApiV2._0.Repositories
                 ProdutoId = newProduct.Id,
                 TipoMovimento = "cadastro",
                 DataMovimento = DateTime.Now,
-                Quantidade = null,
+                Quantidade = 0,
                 UsuarioId = userId
             };
 
@@ -65,23 +78,6 @@ namespace DoeAgasalhoApiV2._0.Repositories
             _context.SaveChanges(); 
 
             return newProduct;
-        }
-
-        //Desativa um produto
-        public void DeactivateProduct(int productId)
-        {
-            var product = _context.Produtos.FirstOrDefault(p => p.Id == productId);
-            if (product != null)
-            {
-                product.Ativo = "0";
-                _context.SaveChanges();
-            }
-        }
-
-        //obtem todos 
-        public List<ProdutoModel> GetAll()
-        {
-            return _context.Produtos.ToList();
         }
 
         //faz um filtro retornando o primeiro produto encontrado, pode buscar por id, categoria, tamanho etc 
@@ -137,30 +133,46 @@ namespace DoeAgasalhoApiV2._0.Repositories
             return characteristics;
         }
 
-        //retorna os produtos ativos
-        public List<ProdutoModel> GetProductActive()
-        {
-            return _context.Produtos.Where(p => p.Ativo == "1").ToList();
-        }
-
-        //retorna os produtos inativos
-        public List<ProdutoModel> GetProductInactive()
-        {
-            return _context.Produtos.Where(p => p.Ativo == "0").ToList();
-        }
-
         //Retorna os produtos de acordo com o ponto de coleta
-        public List<ProdutoModel> GetProdutosByPontoColetaId(int pontoColetaId)
+        public List<ProdutoViewModel> GetProdutosByPontoColeta(int pontoColetaId, string ativo = null)
         {
-            var produtos = _context.PontoProdutos
+            var query = _context.PontoProdutos
                 .Where(pp => pp.PontoColetaId == pontoColetaId)
-                .Select(pp => pp.Produto)
-                .ToList();
+                .Include(pp => pp.Produto)
+                .Select(pp => new ProdutoViewModel
+                {
+                    Id = pp.Produto.Id,
+                    Tipo = pp.Produto.Tipo.Nome,
+                    Ativo = pp.Produto.Ativo,
+                    Caracteristica = pp.Produto.Caracteristica,
+                    Tamanho = pp.Produto.Tamanho.Nome,
+                    Genero = pp.Produto.Genero,
+                    Estoque = pp.Produto.Estoque
+                });
+
+            if(ativo == "1")
+            {
+                query = query.Where(pp => pp.Ativo == "1");
+            } 
+            if(ativo == "0")
+            {
+                query = query.Where(pp => pp.Ativo == "0");
+            }
+
+            var produtos = query.ToList();
 
             return produtos;
         }
 
-        //parei aqui, preciso fazer com que retorn o nome do produto e nao o id
+        public ProdutoModel GetById(int produtoId)
+        {
+            var produto = _context.Produtos
+                .Include(p => p.Tipo)
+                .Include(p => p.Tamanho)
+                .FirstOrDefault(p => p.Id == produtoId);
+
+            return produto;
+        }
 
         //atualiza um produto
         public void Update(ProdutoModel product)
@@ -168,5 +180,22 @@ namespace DoeAgasalhoApiV2._0.Repositories
             _context.Produtos.Update(product);
             _context.SaveChanges();
         }
+
+        /*public void AtualizarEstoque(int produtoId, int quantidade, string tipoOperacao)
+        {
+            var produto =  _context.Produtos.FirstOrDefault(p => p.Id == produtoId);
+
+            if (tipoOperacao == "entrada")
+            {
+                produto.Estoque += quantidade;
+            }
+            else if (tipoOperacao == "saida")
+            {
+                produto.Estoque -= quantidade;
+            }
+
+             _context.SaveChangesAsync();
+        }
+*/
     }
 }

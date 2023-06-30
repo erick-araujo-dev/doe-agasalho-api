@@ -21,5 +21,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         void DeactivateCollectPoint(int id);
 
+        bool IsProdutoAssociated(int produtoId, int pontoColetaId);
     }
 }

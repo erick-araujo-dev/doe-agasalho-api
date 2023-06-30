@@ -6,10 +6,20 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 {
     public interface IProdutoService
     {
+        void ActivateProduct(int id);
+
+        void DeactivateProduct(int id);
+
         ProdutoModel CreateProduct(ProdutoCreateModel newProductCreate);
 
-        List<ProdutoModel> GetProdutosByPontoColeta();
+        List<ProdutoViewModel> GetAllProdutos();
 
-        ProdutoModel UpdateProduct(int id, UpdateProdutoModel product);
+        List<ProdutoViewModel> GetByActiveProdutos();
+
+        List<ProdutoViewModel> GetByInactiveProdutos();
+
+        ProdutoViewModel GetProdutoById(int id);
+
+        ProdutoModel UpdateProduct(int id, ProdutoCreateModel product);
     }
 }

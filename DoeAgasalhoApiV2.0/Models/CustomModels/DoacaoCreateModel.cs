@@ -6,7 +6,7 @@
 
         public string TipoMovimento { get; set; }
 
-        public DateOnly DataMovimento { get; set; }
+        public DateTime DataMovimento { get; set; }
 
         public int Quantidade { get; set; }
 

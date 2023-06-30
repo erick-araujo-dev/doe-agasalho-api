@@ -44,21 +44,9 @@ namespace DoeAgasalhoApiV2._0.Services
         //criar um novo produto
         public ProdutoModel CreateProduct(ProdutoCreateModel newProductCreate)
         {
-            //Recupera o Id do user auth
-            var userId = _utilsService.GetUserIdFromToken();
-            var existingUser = _usuarioRepository.GetById(userId);
-            if (existingUser == null || existingUser.Ativo == "0" || existingUser.Tipo == "admin")
-            {
-                throw new UnauthorizedAccessException("Você não tem permissão para adicionar um novo produto.");
-            }
-            
-            //Recupera o ponto de coleta do user auth
-            var collectPointId = _utilsService.GetPontoColetaIdFromToken();
-            var existingCollectPoint = _pontoColetaRepository.GetById(collectPointId);
-            if (existingCollectPoint == null || existingCollectPoint.Ativo == "0")
-            {
-                throw new UnauthorizedAccessException("Houve um erro ao vincular o produto ao ponto de coleta.");
-            }
+            var userId = _GetUserIdAuth();
+            var collectPointId = _GetCollectPointIdAuth();
+
             //Valida caracteristica e genero
             _utilsService.ValidateStringField(newProductCreate.Caracteristica, "caracteristica", 50, false);
             _ValidateGender(newProductCreate.Genero);
@@ -82,8 +70,21 @@ namespace DoeAgasalhoApiV2._0.Services
             return newProduct;
         }
 
-        //Obter todos produtos
-        public List<ProdutoModel> GetProdutosByPontoColeta()
+        //retorna o id do user auth
+        private int _GetUserIdAuth()
+        {
+            var userId = _utilsService.GetUserIdFromToken();
+            var existingUser = _usuarioRepository.GetById(userId);
+            if (existingUser == null || existingUser.Ativo == "0" || existingUser.Tipo == "admin")
+            {
+                throw new UnauthorizedAccessException("Você não tem permissão para adicionar um novo produto.");
+            }
+
+            return existingUser.Id;
+        }
+
+        //retorna o id ponto de coleta do user auth
+        private int _GetCollectPointIdAuth()
         {
             var collectPointId = _utilsService.GetPontoColetaIdFromToken();
             var existingCollectPoint = _pontoColetaRepository.GetById(collectPointId);
@@ -92,10 +93,63 @@ namespace DoeAgasalhoApiV2._0.Services
                 throw new UnauthorizedAccessException("Ocorreu um erro ao tentar acessar o estoque do ponto de coleta");
             }
 
-            return _produtoRepository.GetProdutosByPontoColetaId(existingCollectPoint.Id);
+            return existingCollectPoint.Id;
         }
 
-        public ProdutoModel UpdateProduct(int id, UpdateProdutoModel product)
+        public ProdutoViewModel GetProdutoById(int id)
+        {
+            var product = _produtoRepository.GetById(id);
+            _ = product ?? throw new NotFoundException("Produto não encontrado.");
+
+            _utilsService.VerifyProductAssociation(id);
+
+            var produtoViewModel = new ProdutoViewModel
+            {
+                Id = product.Id,
+                Ativo = product.Ativo,
+                Tipo = product.Tipo.Nome,
+                Caracteristica = product.Caracteristica,
+                Tamanho = product.Tamanho.Nome,
+                Genero = product.Genero,
+                Estoque = product.Estoque
+            };
+
+            return produtoViewModel;
+        }
+
+        
+
+
+
+        //Obter Produtos ativos
+        public List<ProdutoViewModel> GetByActiveProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            // o no return "1", representa que vou fazer uma query onde o ativo for == 1, para retornar apenas os produtos ativos 
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "1");
+        }
+
+        //Obter Produtos inativos
+        public List<ProdutoViewModel> GetByInactiveProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            // o no return "0", representa que vou fazer uma query onde o ativo for == 0, para retornar apenas os produtos inativos 
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "0");
+        }
+
+        //Obter todos (ativos e inativos)
+        public List<ProdutoViewModel> GetAllProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId);
+        }
+
+
+
+        public ProdutoModel UpdateProduct(int id, ProdutoCreateModel product)
         {
             var existingProduct = _produtoRepository.GetSingleByFilter(p => p.Id == id);
 
@@ -121,7 +175,7 @@ namespace DoeAgasalhoApiV2._0.Services
             return existingProduct;
         }
 
-        
+
         //Valida genero
         private void _ValidateGender(string gender)
         {
@@ -160,6 +214,33 @@ namespace DoeAgasalhoApiV2._0.Services
         {
             return _produtoRepository.GetFilteredProducts(tipoId, tamanhoId, genero, caracteristica);
         }
+
+        public void ActivateProduct(int id)
+        {
+            var product = _produtoRepository.GetById(id);
+            _ = product ?? throw new NotFoundException("Produto não encontrado.");
+
+            if (product.Ativo == "1")
+            {
+                throw new InvalidOperationException("Produto ja esta ativo");
+            }
+
+            _produtoRepository.ActivateProduct(id);
+        }
+
+        public void DeactivateProduct(int id)
+        {
+            var product = _produtoRepository.GetById(id);
+            _ = product ?? throw new NotFoundException("Produto não encontrado.");
+
+            if (product.Ativo == "0")
+            {
+                throw new InvalidOperationException("Produto ja esta inativo");
+            }
+
+            _produtoRepository.DeactivateProduct(id);
+        }
+
 
 
     }
