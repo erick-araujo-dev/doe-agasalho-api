@@ -5,20 +5,20 @@ namespace DoeAgasalhoApiV2._0.Services
 {
     public interface IPontoColetaService
     {
-        bool IsActiveCollectPoint(UsuarioModel user);
+        List<PontoColetaViewModel> GetAllCollectPoint();
 
-        List<PontoColetaCreateModel> GetAllCollectPoint();
+        List<PontoColetaViewModel> GetActivateCollectPoint();
 
-        List<PontoColetaCreateModel> GetActivateCollectPoint();
-
-        List<PontoColetaCreateModel> GetInactiveCollectPoint();
+        List<PontoColetaViewModel> GetInactiveCollectPoint();
 
         PontoColetaModel CreateCollectPoint(PontoColetaCreateModel novoPontoColeta);
 
-        PontoColetaModel UpdateUsername(int id, UpdateUsernameModel pontoColeta);
+        PontoColetaModel UpdateCollectPoint(int id, PontoColetaCreateModel pontoColeta);
 
         void ActivateCollectPoint(int id);
 
         void DeactivateCollectPoint(int id);
+
+        PontoColetaModel GetById(int id);
     }
 }

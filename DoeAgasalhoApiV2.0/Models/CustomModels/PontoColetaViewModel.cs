@@ -2,10 +2,11 @@
 
 namespace DoeAgasalhoApiV2._0.Models.CustomModels
 {
-    public class PontoColetaCreateModel
+    public class PontoColetaViewModel
     {
-        [JsonIgnore] 
         public int Id { get; set; }
+
+        public string? Ativo { get; set; }
 
         public string NomePonto { get; set; }
 

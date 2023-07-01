@@ -7,23 +7,23 @@ namespace DoeAgasalhoApiV2._0.Services
 {
     public class TipoService : ITipoService
     {
-        private readonly IProdutoRepository _produtoRepository;
         private readonly ITipoRepository _tipoRepository;
 
-        public TipoService (IProdutoRepository produtoRepository, ITipoRepository tipoRepository)
+        public TipoService (ITipoRepository tipoRepository)
         {
-            _produtoRepository = produtoRepository;
             _tipoRepository = tipoRepository;
         }
         public TipoModel CreateNewType(string type)
         {
             var newType = _tipoRepository.Add(type);
             return newType;
-         }
+        }
 
-        public List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId)
+        public TipoModel GetById(int id)
         {
-            return _produtoRepository.GetCharacteristicsByFilter(TipoId, TamanhoId);
+            var type = _tipoRepository.GetById(id); 
+            _ = type ?? throw new NotFoundException("Tipo do produto nao encontrado");
+            return type;
         }
     }
 }

@@ -90,5 +90,20 @@ namespace DoeAgasalhoApiV2._0.Repository
                 _context.SaveChanges();
             }
         }
+
+        //metodo para o select no front retorna os usuarios por ponto de coleta
+        public IEnumerable<UsuarioModel> GetUsuariosByPontoColetaId(int? pontoColetaId)
+        {
+            if (pontoColetaId.HasValue)
+            {
+                return _context.Usuarios
+                    .Where(u => u.PontoColetaId == pontoColetaId)
+                    .ToList();
+            }
+
+            return _context.Usuarios.ToList();
+        }
+
+
     }
 }

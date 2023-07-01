@@ -6,6 +6,6 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
     {
         TipoModel CreateNewType(string type);
 
-        List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId);
+        TipoModel GetById(int id);
     }
 }

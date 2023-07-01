@@ -1,18 +1,16 @@
 ﻿using DoeAgasalhoApiV2._0.Exceptions;
-using DoeAgasalhoApiV2._0.Models.Custom_Models;
 using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DoeAgasalhoApiV2._0.Controllers
 {
-    [Route("api/produtos")]
+    [Route("api/products")]
     [ApiController]
     public class ProdutoController : ControllerBase
     {
@@ -26,6 +24,25 @@ namespace DoeAgasalhoApiV2._0.Controllers
             _utilsService = utilsService;
         }
         // GET: api/produtos
+        [HttpGet]
+        [Authorize(Roles = "normal")]
+        public IActionResult GetAllOrFiltered(int? tipoId, int? tamanhoId, string? genero, string? caracteristica)
+        {
+            try
+            {
+                var produtos = _produtoService.GetAllOrFiltered(tipoId, tamanhoId, genero, caracteristica);
+                return Ok(produtos);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, $"Erro: {ex.Message}");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -39,30 +56,13 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return NotFound(ex.Message);
             }
-            catch (Exception)
-            {
-                return StatusCode(500, "Ocorreu um erro ao buscar o produto.");
-            }
-        }
-
-        [HttpGet("all")]
-        [Authorize(Roles = "normal")]
-
-        public IActionResult GetAll()
-        {
-            //ok
-            try
-            {
-                var products = _produtoService.GetAllProdutos();
-                return Ok(products);
-            }
             catch (UnauthorizedAccessException ex)
             {
                 return StatusCode(403, $"Erro: {ex.Message}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, $"Ocorreu um erro ao obter todos os produtos: {ex.Message}");
+                return StatusCode(500, "Ocorreu um erro ao buscar o produto.");
             }
         }
 

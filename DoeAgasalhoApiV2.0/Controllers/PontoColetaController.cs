@@ -5,12 +5,12 @@ using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace DoeAgasalhoApiV2._0.Controllers
 {
-    [Route("api/pontocoleta")]
+    [Route("api/collectpoint")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class PontoColetaController : ControllerBase
     {
         private readonly IPontoColetaService _pontoColetaService;
@@ -19,7 +19,23 @@ namespace DoeAgasalhoApiV2._0.Controllers
         {
             _pontoColetaService = pontoColetaService;
         }
-
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var collectPoint = _pontoColetaService.GetById(id);
+                return Ok(collectPoint);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro ao buscar o ponto de coleta.");
+            }
+        }
         [HttpGet("all")]
         public IActionResult Get()
         {
@@ -85,12 +101,12 @@ namespace DoeAgasalhoApiV2._0.Controllers
 
 
 
-        [HttpPut("{id}/updateusername")]
-        public ActionResult<PontoColetaModel> Update(int id, UpdateUsernameModel updatePontoColeta)
+        [HttpPut("{id}/update")]
+        public ActionResult<PontoColetaModel> Update(int id, PontoColetaCreateModel updatePontoColeta)
         {
             try
             {
-                var pontoColeta = _pontoColetaService.UpdateUsername(id, updatePontoColeta);
+                var pontoColeta = _pontoColetaService.UpdateCollectPoint(id, updatePontoColeta);
                 return Ok(pontoColeta);
 
             } catch(NotFoundException ex)

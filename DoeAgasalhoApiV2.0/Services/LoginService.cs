@@ -3,7 +3,6 @@ using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repository.Interface;
 using DoeAgasalhoApiV2._0.Services.Interface;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DoeAgasalhoApiV2._0.Services
 {
@@ -12,14 +11,22 @@ namespace DoeAgasalhoApiV2._0.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IUsuarioService _usuarioService;
         private readonly ITokenService _tokenService;
+        private readonly IUtilsService _utilsService;
         private readonly IPontoColetaService _pontoColetaService;
 
-        public LoginService(IUsuarioRepository usuarioRepository, IUsuarioService usuarioService, ITokenService tokenService, IPontoColetaService pontoColetaService)
+        public LoginService(
+            IUsuarioRepository usuarioRepository,
+            IUsuarioService usuarioService,
+            ITokenService tokenService,
+            IPontoColetaService pontoColetaService,
+            IUtilsService utilsService
+            )
         {
             _usuarioRepository = usuarioRepository;
             _usuarioService = usuarioService;
             _tokenService = tokenService;
             _pontoColetaService = pontoColetaService;
+            _utilsService = utilsService;
         }
 
         public UsuarioModel Authenticate(LoginModel model)
@@ -39,7 +46,7 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             // Verifica se o ponto de coleta do usuário está ativo, se estiver inativo não conseguirá fazer login
-            if (!_pontoColetaService.IsActiveCollectPoint(usuario) && usuario.Tipo != "admin")
+            if (!_utilsService.IsActiveCollectPoint(usuario) && usuario.Tipo != "admin")
             {
                 throw new InvalidOperationException("Você não está associado a nenhum ponto de coleta, contate o administrador.");
             }

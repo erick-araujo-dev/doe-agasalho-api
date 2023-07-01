@@ -26,5 +26,6 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
         List<UsuarioModel> GetActiveUsers();
 
         List<UsuarioModel> GetInactiveUsers();
+        UsuarioModel GetById(int id);
     }
 }

@@ -26,5 +26,6 @@ namespace DoeAgasalhoApiV2._0.Repository.Interface
 
         void DeactivateUser(int userId);
 
+        IEnumerable<UsuarioModel> GetUsuariosByPontoColetaId(int? pontoColetaId);
     }
 }

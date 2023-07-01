@@ -31,7 +31,14 @@ namespace DoeAgasalhoApiV2._0.Services
         //Obter usuarios desativados
         public List<UsuarioModel> GetInactiveUsers() => _usuarioRepository.GetByActiveStatus(false);
 
-        //centraldeservicos
+        //
+        public UsuarioModel GetById(int id)
+        {
+            var user = _usuarioRepository.GetById(id);
+            _ = user ?? throw new ArgumentNullException("Usuario não encontrado");
+
+            return user;
+        }
 
         // Add novo usuario
         public UsuarioModel CreateUser(UsuarioCreateModel user)
@@ -59,7 +66,7 @@ namespace DoeAgasalhoApiV2._0.Services
             _ = existingUser ?? throw new NotFoundException("Usuário não encontrado.");
 
             //Busca o id do usuario autenticado
-            int requestingUserId = _utilsService.GetUserIdFromToken(); 
+            int requestingUserId = _utilsService.GetUserIdFromToken();
 
             if (requestingUserId != existingUser.Id)
             {
@@ -141,8 +148,6 @@ namespace DoeAgasalhoApiV2._0.Services
             return user.Senha == password;
         }
 
-
-
         //Ativar usuario
 
         public void ActivateUser(int id)
@@ -174,17 +179,11 @@ namespace DoeAgasalhoApiV2._0.Services
             _ = user ?? throw new NotFoundException("Usuário não encontrado.");
 
 
-            if (user.Tipo == "admin")
-            {
-                throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
-            }
+            if (user.Tipo == "admin") throw new UnauthorizedAccessException("Admin não tem permissão para ativar outros admin.");
 
             _utilsService.ValidateActive(user.Ativo);
 
-            if (user.Ativo == "0")
-            {
-                throw new InvalidOperationException("O usuário já está inativo.");
-            }
+            if (user.Ativo == "0") throw new InvalidOperationException("O usuário já está inativo.");
 
             _usuarioRepository.DeactivateUser(id);
         }
@@ -194,14 +193,11 @@ namespace DoeAgasalhoApiV2._0.Services
             return user?.Ativo == "1";
         }
 
-
-
         private bool _IsEmailAlreadyExists(string email)
         {
             var user = _usuarioRepository.GetByEmail(email);
             return user != null;
         }
-
 
         //Validacao tipo de dados 
 
@@ -224,34 +220,17 @@ namespace DoeAgasalhoApiV2._0.Services
         private void _ValidatePassword(string password)
         {
             // Verificar o comprimento mínimo de oito caracteres
-            if (password.Length < 8)
-            {
-                throw new ArgumentException("A senha deve conter pelo menos oito caracteres.");
-            }
+            if (password.Length < 8) throw new ArgumentException("A senha deve conter pelo menos oito caracteres.");
 
-            if (!password.Any(char.IsDigit))
-            {
-                throw new ArgumentException("A senha deve conter pelo menos um número.");
-            }
+            if (!password.Any(char.IsDigit)) throw new ArgumentException("A senha deve conter pelo menos um número.");
 
-            if (!password.Any(char.IsSymbol) && !password.Any(char.IsPunctuation))
-            {
-                throw new ArgumentException("A senha deve conter pelo menos um caractere especial.");
-            }
+            if (!password.Any(char.IsSymbol) && !password.Any(char.IsPunctuation)) throw new ArgumentException("A senha deve conter pelo menos um caractere especial.");
 
-            if (!password.Any(char.IsUpper))
-            {
-                throw new ArgumentException("A senha deve conter pelo menos uma letra maiúscula.");
-            }
+            if (!password.Any(char.IsUpper)) throw new ArgumentException("A senha deve conter pelo menos uma letra maiúscula.");
 
-            if (!password.Any(char.IsLower))
-            {
-                throw new ArgumentException("A senha deve conter pelo menos uma letra minúscula.");
-            }
-            if (password.Length > 100)
-            {
-                throw new ArgumentException("A senha deve ter no máximo 100 caracteres.");
-            }
+            if (!password.Any(char.IsLower)) throw new ArgumentException("A senha deve conter pelo menos uma letra minúscula.");
+
+            if (password.Length > 100) throw new ArgumentException("A senha deve ter no máximo 100 caracteres.");
         }
 
         //Valida tipo de usuario

@@ -94,32 +94,15 @@ namespace DoeAgasalhoApiV2._0.Repositories
         }
 
         //filtro personalizado para usar na busca de produto, tem todas opcoes, porém só fará a busca, para os filstros selecionados
-        public List<ProdutoModel> GetFilteredProducts(int? tipoId, int? tamanhoId, string genero, string caracteristica)
+       
+
+        public IQueryable<ProdutoModel> GetAll()
         {
-            var query = _context.Produtos.AsQueryable();
-
-            if (tipoId.HasValue)
-            {
-                query = query.Where(p => p.TipoId == tipoId.Value);
-            }
-
-            if (tamanhoId.HasValue)
-            {
-                query = query.Where(p => p.TamanhoId == tamanhoId.Value);
-            }
-
-            if (!string.IsNullOrEmpty(genero))
-            {
-                query = query.Where(p => p.Genero == genero);
-            }
-
-            if (!string.IsNullOrEmpty(caracteristica))
-            {
-                query = query.Where(p => p.Caracteristica == caracteristica);
-            }
-
-            return query.ToList();
+            return _context.Produtos.
+                Include(p => p.PontoProdutos);
         }
+
+
 
         //filtragem para usar na exibicao dos valores do select, quando marcar um tipo, retornara as caracteristicas para aquele tipo especifico
         public List<string> GetCharacteristicsByFilter(int tipoId, int tamanhoId)
@@ -154,7 +137,7 @@ namespace DoeAgasalhoApiV2._0.Repositories
             {
                 query = query.Where(pp => pp.Ativo == "1");
             } 
-            if(ativo == "0")
+            else if(ativo == "0")
             {
                 query = query.Where(pp => pp.Ativo == "0");
             }
@@ -180,22 +163,5 @@ namespace DoeAgasalhoApiV2._0.Repositories
             _context.Produtos.Update(product);
             _context.SaveChanges();
         }
-
-        /*public void AtualizarEstoque(int produtoId, int quantidade, string tipoOperacao)
-        {
-            var produto =  _context.Produtos.FirstOrDefault(p => p.Id == produtoId);
-
-            if (tipoOperacao == "entrada")
-            {
-                produto.Estoque += quantidade;
-            }
-            else if (tipoOperacao == "saida")
-            {
-                produto.Estoque -= quantidade;
-            }
-
-             _context.SaveChangesAsync();
-        }
-*/
     }
 }

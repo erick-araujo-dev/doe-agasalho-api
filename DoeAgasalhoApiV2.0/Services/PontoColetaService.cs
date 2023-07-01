@@ -19,94 +19,82 @@ namespace DoeAgasalhoApiV2._0.Services
             _utilsService = utilsService;
         }
 
-        private void _ValidateCollectPointName(string name)
-        {
-            var user = _pontoColetaRepository.GetByName(name);
-
-            if (user != null)
-            {
-                throw new BusinessOperationException("O nome fornecido já está sendo utilizado por outra unidade. Por favor, utilize outro nome.");
-            }
-
-            if (name.Length > 50)
-            {
-                throw new ArgumentException("O nome deve ter no máximo 50 caracteres.");
-            }
-        }
-
         //Obter todos pontos de 
-        public List<PontoColetaCreateModel> GetAllCollectPoint() => _pontoColetaRepository.GetAll();
+        public List<PontoColetaViewModel> GetAllCollectPoint() => _pontoColetaRepository.GetAll();
 
         //Obter pontos de coleta ativos
-        public List<PontoColetaCreateModel> GetActivateCollectPoint() => _pontoColetaRepository.GetByActiveStatus(true);
+        public List<PontoColetaViewModel> GetActivateCollectPoint() => _pontoColetaRepository.GetByActiveStatus(true);
 
         //Obter pontos de coletas desativados
-        public List<PontoColetaCreateModel> GetInactiveCollectPoint() => _pontoColetaRepository.GetByActiveStatus(false);
+        public List<PontoColetaViewModel> GetInactiveCollectPoint() => _pontoColetaRepository.GetByActiveStatus(false);
 
-        public bool IsActiveCollectPoint(UsuarioModel user)
+        //Obter por id
+        public PontoColetaModel GetById(int id)
         {
-            if (user.PontoColetaId == null && user.Tipo != "admin")
-            {
-                throw new BusinessOperationException("Falha ao fazer login, usuário não está associado a nenhum ponto de coleta.");
-            }
+            var collectPoint = _pontoColetaRepository.GetById(id);
+            _ = collectPoint ?? throw new NotFoundException("Ponto de Coleta não encontrado.");
 
-            var collectPointId = user.PontoColetaId;
-
-            if (collectPointId.HasValue)
-            {
-                var idPonto = collectPointId.Value;
-                var collectPoint = _pontoColetaRepository.GetById(idPonto);
-
-                if (collectPoint != null)
-                {
-                    return collectPoint.Ativo == "1";
-                }
-            }
-
-            return false;
+            return collectPoint;
         }
 
         public PontoColetaModel CreateCollectPoint(PontoColetaCreateModel novoPontoColeta)
         {
             _ValidateCollectPointName(novoPontoColeta.NomePonto);
-
-            _enderecoService.ValidateAddress(
-                novoPontoColeta.Numero,
-                novoPontoColeta.Logradouro,
-                novoPontoColeta.Complemento,
-                novoPontoColeta.Bairro,
-                novoPontoColeta.Cidade,
-                novoPontoColeta.Estado,
-                novoPontoColeta.Cep
-                );
-
-            //Abrevia e valida o estado
-            novoPontoColeta.Estado = _enderecoService.AbbreviateState(novoPontoColeta.Estado);
-            _enderecoService.ValidateStateName(novoPontoColeta.Estado);
-
-            //formata o cep
-            novoPontoColeta.Cep = _enderecoService.FormatZipCode(novoPontoColeta.Cep);
+            _ValidateDataAddressCollectPoint(novoPontoColeta);
 
             return _pontoColetaRepository.Add(novoPontoColeta);
         }
 
         //Update username Ponto de Coleta 
-        public PontoColetaModel UpdateUsername(int id, UpdateUsernameModel pontoColeta)
+        public PontoColetaModel UpdateCollectPoint(int id, PontoColetaCreateModel pontoColeta)
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
             _ = collectPoint ?? throw new NotFoundException("Ponto de Coleta não encontrado.");
 
-
-            _ValidateCollectPointName(pontoColeta.Nome);
-
-            collectPoint.NomePonto = pontoColeta.Nome;
+            _ValidateDataAddressCollectPoint(pontoColeta);
+            if (pontoColeta.NomePonto != collectPoint.NomePonto)
+            {
+                collectPoint.NomePonto = pontoColeta.NomePonto;
+                _ValidateCollectPointName(pontoColeta.NomePonto);
+            }
+            
+            if (collectPoint.Endereco != null)
+            {
+                collectPoint.Endereco.Logradouro = pontoColeta.Logradouro;
+                collectPoint.Endereco.Numero = pontoColeta.Numero;
+                collectPoint.Endereco.Complemento = pontoColeta.Complemento;
+                collectPoint.Endereco.Bairro = pontoColeta.Bairro;
+                collectPoint.Endereco.Cidade = pontoColeta.Cidade;
+                collectPoint.Endereco.Cep = pontoColeta.Cep;
+            }
 
             _pontoColetaRepository.Update(collectPoint);
             return collectPoint;
         }
 
-        //Ativar usuario
+        //Valida endereco
+        private void _ValidateDataAddressCollectPoint(PontoColetaCreateModel pontoColeta)
+        {
 
+            _enderecoService.ValidateAddress(
+                pontoColeta.Numero,
+                pontoColeta.Logradouro,
+                pontoColeta.Complemento,
+                pontoColeta.Bairro,
+                pontoColeta.Cidade,
+                pontoColeta.Estado,
+                pontoColeta.Cep
+                );
+
+            //Abrevia e valida o estado
+            pontoColeta.Estado = _enderecoService.AbbreviateState(pontoColeta.Estado);
+            _enderecoService.ValidateStateName(pontoColeta.Estado);
+
+            //formata o cep
+            pontoColeta.Cep = _enderecoService.FormatZipCode(pontoColeta.Cep);
+        }
+
+        //Ativar pc
         public void ActivateCollectPoint(int id)
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
@@ -123,7 +111,7 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
 
-        //Desativar Ponto de coleta
+        //Desativar pc
         public void DeactivateCollectPoint(int id)
         {
             var collectPoint = _pontoColetaRepository.GetById(id);
@@ -138,6 +126,22 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             _pontoColetaRepository.DeactivateCollectPoint(id);
+        }
+
+        //Valida nome do ponto de coleta
+        private void _ValidateCollectPointName(string name)
+        {
+            var user = _pontoColetaRepository.GetByName(name);
+
+            if (user != null)
+            {
+                throw new BusinessOperationException("O nome fornecido já está sendo utilizado por outra unidade. Por favor, utilize outro nome.");
+            }
+
+            if (name.Length > 50)
+            {
+                throw new ArgumentException("O nome deve ter no máximo 50 caracteres.");
+            }
         }
     }
 }

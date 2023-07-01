@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using DoeAgasalhoApiV2._0.Exceptions;
 using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
+using DoeAgasalhoApiV2._0.Repository.Interface;
 
 namespace DoeAgasalhoApiV2._0.Controllers
 {
@@ -14,13 +14,22 @@ namespace DoeAgasalhoApiV2._0.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IUtilsService _utilsService;
 
 
-        public UsuarioController(IUsuarioService usuarioService, IUtilsService utilsService)
+        public UsuarioController(IUsuarioService usuarioService, IUtilsService utilsService, IUsuarioRepository usuarioRepository)
         {
             _usuarioService = usuarioService;
             _utilsService = utilsService;   
+            _usuarioRepository = usuarioRepository;
+        }
+        //Retorna os usuarios por ponto de coleta, se nao for enviado o ponto de coleta retorna todos usuarios
+        [HttpGet]
+        public IActionResult GetUsuariosByPontoColetaId(int? pontoColetaId)
+        {
+            var usuarios = _usuarioRepository.GetUsuariosByPontoColetaId(pontoColetaId);
+            return Ok(usuarios);
         }
 
         [HttpGet("all")]
@@ -35,6 +44,25 @@ namespace DoeAgasalhoApiV2._0.Controllers
             catch (Exception)
             {
                 return StatusCode(500, "Ocorreu um erro ao obter todos os usuários.");
+            }
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var user = _usuarioService.GetById(id);
+                return Ok(user);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro ao buscar o usuário.");
             }
         }
 

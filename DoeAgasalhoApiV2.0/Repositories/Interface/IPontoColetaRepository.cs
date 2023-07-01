@@ -9,9 +9,9 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         PontoColetaModel GetByName(string name);
 
-        List<PontoColetaCreateModel> GetByActiveStatus(bool ativo);
+        List<PontoColetaViewModel> GetByActiveStatus(bool ativo);
 
-        List<PontoColetaCreateModel> GetAll();
+        List<PontoColetaViewModel> GetAll();
 
         PontoColetaModel Add(PontoColetaCreateModel novoPontoColeta);
 

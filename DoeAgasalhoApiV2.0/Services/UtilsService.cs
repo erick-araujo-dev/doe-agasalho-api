@@ -1,4 +1,5 @@
 ﻿using DoeAgasalhoApiV2._0.Exceptions;
+using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using System.Security.Claims;
@@ -109,7 +110,28 @@ namespace DoeAgasalhoApiV2._0.Services
             }
         }
 
+        public bool IsActiveCollectPoint(UsuarioModel user)
+        {
+            if (user.PontoColetaId == null && user.Tipo != "admin")
+            {
+                throw new BusinessOperationException("Falha ao fazer login, usuário não está associado a nenhum ponto de coleta.");
+            }
 
+            var collectPointId = user.PontoColetaId;
+
+            if (collectPointId.HasValue)
+            {
+                var idPonto = collectPointId.Value;
+                var collectPoint = _pontoColetaRepository.GetById(idPonto);
+
+                if (collectPoint != null)
+                {
+                    return collectPoint.Ativo == "1";
+                }
+            }
+
+            return false;
+        }
     }
 
 }

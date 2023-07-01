@@ -22,16 +22,21 @@ namespace DoeAgasalhoApiV2._0.Repositories
 
         public PontoColetaModel GetById(int id)
         {
-            return _context.PontoColeta.FirstOrDefault(p => p.Id == id);
+            return _context.PontoColeta.
+                Include(p => p.Endereco).
+                FirstOrDefault(p => p.Id == id);
         }
 
-        public List<PontoColetaCreateModel> GetByActiveStatus(bool ativo)
+        public List<PontoColetaViewModel> GetByActiveStatus(bool ativo)
         {
             string ativoString = ativo ? "1" : "0";
             return _context.PontoColeta.
                 Include(u => u.Endereco).
-                Select(p => new PontoColetaCreateModel
+                Where(u => u.Ativo == ativoString).
+                Select(p => new PontoColetaViewModel
                 {
+                    Id = p.Id,
+                    Ativo = ativoString,
                     NomePonto = p.NomePonto,
                     Logradouro = p.Endereco.Logradouro,
                     Numero = p.Endereco.Numero,
@@ -49,14 +54,15 @@ namespace DoeAgasalhoApiV2._0.Repositories
             return _context.PontoColeta.FirstOrDefault(u => u.NomePonto == name);
         }
 
-        public List<PontoColetaCreateModel> GetAll()
+        public List<PontoColetaViewModel> GetAll()
         {
             return _context.PontoColeta.
                 Include(u => u.Endereco).
-                Select(p => new PontoColetaCreateModel
-            {
-                NomePonto = p.NomePonto,
+                Select(p => new PontoColetaViewModel
+                {
+                Id = p.Id,
                 Ativo = p.Ativo,
+                NomePonto = p.NomePonto,
                 Logradouro = p.Endereco.Logradouro,
                 Numero = p.Endereco.Numero,
                 Complemento = p.Endereco.Complemento,

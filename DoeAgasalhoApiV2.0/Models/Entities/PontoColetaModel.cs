@@ -13,5 +13,5 @@ public partial class PontoColetaModel
 
     public int EnderecoId { get; set; }
 
-    public virtual EnderecoModel Endereco { get; set; } = null!;
+    public virtual EnderecoModel Endereco { get; set; }
 }

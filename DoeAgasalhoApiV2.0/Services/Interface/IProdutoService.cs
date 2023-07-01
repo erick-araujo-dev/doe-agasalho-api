@@ -21,5 +21,8 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
         ProdutoViewModel GetProdutoById(int id);
 
         ProdutoModel UpdateProduct(int id, ProdutoCreateModel product);
+
+        List<ProdutoViewModel> GetAllOrFiltered(int? tipoId, int? tamanhoId, string? genero, string? caracteristica);
+        List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId);
     }
 }

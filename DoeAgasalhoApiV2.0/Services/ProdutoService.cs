@@ -41,6 +41,99 @@ namespace DoeAgasalhoApiV2._0.Services
             _utilsService = utilsService;
         }
 
+        //Obtem todos os produtos, se nao for selecionado nenhum filtro, se filtrado, retorna apenas os filtrados
+        public List<ProdutoViewModel> GetAllOrFiltered(int? tipoId, int? tamanhoId, string? genero, string? caracteristica)
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            var query = _produtoRepository.GetAll();
+
+            if (tipoId.HasValue) query = query.Where(p => p.TipoId == tipoId.Value);
+            
+            if (tamanhoId.HasValue) query = query.Where(p => p.TamanhoId == tamanhoId.Value);
+
+            if (!string.IsNullOrEmpty(genero)) query = query.Where(p => p.Genero == genero);
+
+            if (!string.IsNullOrEmpty(caracteristica)) query = query.Where(p => p.Caracteristica == caracteristica);
+
+            if (collectPointId != null) query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
+
+            var produtos = query.OrderBy(p => p.Tipo.Nome).ToList();
+
+            var produtosViewModel = new List<ProdutoViewModel>();
+
+            foreach (var produto in produtos)
+            {
+                var produtoViewModel = new ProdutoViewModel
+                {
+                    Id = produto.Id,
+                    Ativo = produto.Ativo,
+                    Tipo = _tipoService.GetById(produto.TipoId)?.Nome,
+                    Caracteristica = produto.Caracteristica,
+                    Tamanho = _tamanhoService.GetById(produto.TamanhoId)?.Nome,
+                    Genero = produto.Genero,
+                    Estoque = produto.Estoque,
+                };
+
+                produtosViewModel.Add(produtoViewModel);
+            }
+
+            return produtosViewModel;
+        }
+
+        //Retorna produto por Id
+        public ProdutoViewModel GetProdutoById(int id)
+        {
+            var product = _produtoRepository.GetById(id);
+            _ = product ?? throw new NotFoundException("Produto não encontrado.");
+
+            _utilsService.VerifyProductAssociation(id);
+
+            var produtoViewModel = new ProdutoViewModel
+            {
+                Id = product.Id,
+                Ativo = product.Ativo,
+                Tipo = product.Tipo.Nome,
+                Caracteristica = product.Caracteristica,
+                Tamanho = product.Tamanho.Nome,
+                Genero = product.Genero,
+                Estoque = product.Estoque
+            };
+
+            return produtoViewModel;
+        }
+
+        //Obter Produtos ativos
+        public List<ProdutoViewModel> GetByActiveProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            // o no return "1", representa que vou fazer uma query onde o ativo for == 1, para retornar apenas os produtos ativos 
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "1");
+        }
+
+        //Obter Produtos inativos
+        public List<ProdutoViewModel> GetByInactiveProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            // o no return "0", representa que vou fazer uma query onde o ativo for == 0, para retornar apenas os produtos inativos 
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "0");
+        }
+
+        //Obter todos (ativos e inativos)
+        public List<ProdutoViewModel> GetAllProdutos()
+        {
+            var collectPointId = _GetCollectPointIdAuth();
+
+            return _produtoRepository.GetProdutosByPontoColeta(collectPointId);
+        }
+        //Retorna as caracteristicas filtradas por produto e tamanho
+        public List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId)
+        {
+            return _produtoRepository.GetCharacteristicsByFilter(TipoId, TamanhoId);
+        }
+
         //criar um novo produto
         public ProdutoModel CreateProduct(ProdutoCreateModel newProductCreate)
         {
@@ -96,59 +189,6 @@ namespace DoeAgasalhoApiV2._0.Services
             return existingCollectPoint.Id;
         }
 
-        public ProdutoViewModel GetProdutoById(int id)
-        {
-            var product = _produtoRepository.GetById(id);
-            _ = product ?? throw new NotFoundException("Produto não encontrado.");
-
-            _utilsService.VerifyProductAssociation(id);
-
-            var produtoViewModel = new ProdutoViewModel
-            {
-                Id = product.Id,
-                Ativo = product.Ativo,
-                Tipo = product.Tipo.Nome,
-                Caracteristica = product.Caracteristica,
-                Tamanho = product.Tamanho.Nome,
-                Genero = product.Genero,
-                Estoque = product.Estoque
-            };
-
-            return produtoViewModel;
-        }
-
-        
-
-
-
-        //Obter Produtos ativos
-        public List<ProdutoViewModel> GetByActiveProdutos()
-        {
-            var collectPointId = _GetCollectPointIdAuth();
-
-            // o no return "1", representa que vou fazer uma query onde o ativo for == 1, para retornar apenas os produtos ativos 
-            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "1");
-        }
-
-        //Obter Produtos inativos
-        public List<ProdutoViewModel> GetByInactiveProdutos()
-        {
-            var collectPointId = _GetCollectPointIdAuth();
-
-            // o no return "0", representa que vou fazer uma query onde o ativo for == 0, para retornar apenas os produtos inativos 
-            return _produtoRepository.GetProdutosByPontoColeta(collectPointId, "0");
-        }
-
-        //Obter todos (ativos e inativos)
-        public List<ProdutoViewModel> GetAllProdutos()
-        {
-            var collectPointId = _GetCollectPointIdAuth();
-
-            return _produtoRepository.GetProdutosByPontoColeta(collectPointId);
-        }
-
-
-
         public ProdutoModel UpdateProduct(int id, ProdutoCreateModel product)
         {
             var existingProduct = _produtoRepository.GetSingleByFilter(p => p.Id == id);
@@ -174,7 +214,6 @@ namespace DoeAgasalhoApiV2._0.Services
             _produtoRepository.Update(existingProduct);
             return existingProduct;
         }
-
 
         //Valida genero
         private void _ValidateGender(string gender)
@@ -208,11 +247,6 @@ namespace DoeAgasalhoApiV2._0.Services
             }
 
             return existingSize;
-        }
-
-        public List<ProdutoModel> GetFilteredProducts(int? tipoId, int? tamanhoId, string genero, string caracteristica)
-        {
-            return _produtoRepository.GetFilteredProducts(tipoId, tamanhoId, genero, caracteristica);
         }
 
         public void ActivateProduct(int id)

@@ -2,7 +2,6 @@
 using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
-using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DoeAgasalhoApiV2._0.Controllers
 {
-    [Route("api/doacoes")]
+    [Route("api/donations")]
     [ApiController]
     public class DoacaoController : ControllerBase
     {
@@ -20,14 +19,40 @@ namespace DoeAgasalhoApiV2._0.Controllers
         private readonly IUtilsService _utilsService;
 
 
-        public DoacaoController (IDoacaoService doacaoService, IDoacaoRepository doacaoRepository, IUtilsService utilsService)
+        public DoacaoController(IDoacaoService doacaoService, IDoacaoRepository doacaoRepository, IUtilsService utilsService)
         {
             _doacaoService = doacaoService;
             _doacaoRepository = doacaoRepository;
             _utilsService = utilsService;
         }
 
-        // GET api/<DoacaoController>/5
+        [HttpGet]
+        public IActionResult GetDoacoes(int? collectPointId, int? userId, int? day, int? month, int? year, string? typeOfMovement)
+        {
+            var doacoes = _doacaoService.GetAllDonations(collectPointId, userId, day, month, year, typeOfMovement);
+            return Ok(doacoes);
+        }
+
+        [HttpGet("{id}/search")]
+        public ActionResult<DoacaoViewModel> GetDoacaoPorId(int id)
+        {
+            try
+            {
+                var resultado = _doacaoService.ExibirDoacaoPorId(id);
+                return Ok(resultado);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro ao buscar a doação por ID. {ex.Message}");
+            }
+        }
+
+        //Metodo usado para retornar o produto doado
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("{id}")]
         public async Task<ActionResult<DoacaoModel>> Get(int id)
         {
@@ -47,7 +72,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("entrada")]
+        [HttpPost("inventory/entry")]
         [Authorize(Roles = "normal")]
         public async Task<ActionResult<DoacaoModel>> PostEntradaDoacao([FromBody] DoacaoEntradaSaidaModel model)
         {
@@ -75,7 +100,7 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
-        [HttpPost("saida")]
+        [HttpPost("inventory/exit")]
         [Authorize(Roles = "normal")]
         public async Task<ActionResult<DoacaoModel>> PostSaidaDoacao([FromBody] DoacaoEntradaSaidaModel model)
         {

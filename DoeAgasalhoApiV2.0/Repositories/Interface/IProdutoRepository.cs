@@ -11,8 +11,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         List<ProdutoModel> GetAllByFilter(Func<ProdutoModel, bool> filter);
 
-        List<ProdutoModel> GetFilteredProducts(int? tipoId, int? tamanhoId, string genero, string caracteristica);
-
         void Update(ProdutoModel product);
 
         void ActivateProduct(int productId);
@@ -27,6 +25,7 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         ProdutoModel GetById(int produtoId);
 
-        //void AtualizarEstoque(int produtoId, int quantidade, string tipoOperacao);
+        IQueryable<ProdutoModel> GetAll();
+
     }
 }
