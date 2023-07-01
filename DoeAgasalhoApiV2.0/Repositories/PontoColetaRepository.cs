@@ -54,24 +54,31 @@ namespace DoeAgasalhoApiV2._0.Repositories
             return _context.PontoColeta.FirstOrDefault(u => u.NomePonto == name);
         }
 
-        public List<PontoColetaViewModel> GetAll()
+        public async Task<List<PontoColetaViewModel>> GetAllActive()
         {
-            return _context.PontoColeta.
-                Include(u => u.Endereco).
-                Select(p => new PontoColetaViewModel
+            var viewModels = await _context.PontoColeta
+                .Include(u => u.PontoProdutos)
+               .Where(u => u.Ativo == "1")
+                .Select(p => new PontoColetaViewModel
                 {
-                Id = p.Id,
-                Ativo = p.Ativo,
-                NomePonto = p.NomePonto,
-                Logradouro = p.Endereco.Logradouro,
-                Numero = p.Endereco.Numero,
-                Complemento = p.Endereco.Complemento,
-                Bairro = p.Endereco.Bairro,
-                Cidade = p.Endereco.Cidade,
-                Estado = p.Endereco.Estado,
-                Cep = p.Endereco.Cep
+                    Id = p.Id,
+                    Ativo = p.Ativo,
+                    NomePonto = p.NomePonto,
+                    Logradouro = p.Endereco.Logradouro,
+                    Numero = p.Endereco.Numero,
+                    Complemento = p.Endereco.Complemento,
+                    Bairro = p.Endereco.Bairro,
+                    Cidade = p.Endereco.Cidade,
+                    Estado = p.Endereco.Estado,
+                    Cep = p.Endereco.Cep,
+                    QuantidadeUsuarios = _context.Usuarios.Count(u => u.PontoColetaId == p.Id),
+                    QuantidadeProdutos = _context.PontoProdutos
+                        .Where(pp => pp.PontoColetaId == p.Id)
+                        .Sum(pp => pp.Produto.Estoque)
+                })
+                .ToListAsync();
 
-            }).ToList();
+            return viewModels;
         }
 
         public PontoColetaModel Add(PontoColetaCreateModel novoPontoColeta)

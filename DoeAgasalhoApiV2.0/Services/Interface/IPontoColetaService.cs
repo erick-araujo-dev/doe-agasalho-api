@@ -5,8 +5,6 @@ namespace DoeAgasalhoApiV2._0.Services
 {
     public interface IPontoColetaService
     {
-        List<PontoColetaViewModel> GetAllCollectPoint();
-
         List<PontoColetaViewModel> GetActivateCollectPoint();
 
         List<PontoColetaViewModel> GetInactiveCollectPoint();
@@ -20,5 +18,7 @@ namespace DoeAgasalhoApiV2._0.Services
         void DeactivateCollectPoint(int id);
 
         PontoColetaModel GetById(int id);
+
+        Task<List<PontoColetaViewModel>> GetAllActive();
     }
 }

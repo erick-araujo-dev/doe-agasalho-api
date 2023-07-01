@@ -20,7 +20,11 @@ namespace DoeAgasalhoApiV2._0.Services
         }
 
         //Obter todos pontos de 
-        public List<PontoColetaViewModel> GetAllCollectPoint() => _pontoColetaRepository.GetAll();
+        public async Task<List<PontoColetaViewModel>> GetAllActive()
+        {
+            var viewModel = await _pontoColetaRepository.GetAllActive();
+            return viewModel;
+        }
 
         //Obter pontos de coleta ativos
         public List<PontoColetaViewModel> GetActivateCollectPoint() => _pontoColetaRepository.GetByActiveStatus(true);

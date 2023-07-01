@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using DoeAgasalhoApiV2._0.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace DoeAgasalhoApiV2._0.Models.Custom_Models
 {
@@ -18,5 +19,7 @@ namespace DoeAgasalhoApiV2._0.Models.Custom_Models
         public string Genero { get; set; }
 
         public int Estoque { get; set; }
+
+
     }
 }

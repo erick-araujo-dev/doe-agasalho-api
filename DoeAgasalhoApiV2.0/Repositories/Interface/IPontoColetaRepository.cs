@@ -11,7 +11,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         List<PontoColetaViewModel> GetByActiveStatus(bool ativo);
 
-        List<PontoColetaViewModel> GetAll();
 
         PontoColetaModel Add(PontoColetaCreateModel novoPontoColeta);
 
@@ -22,5 +21,7 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
         void DeactivateCollectPoint(int id);
 
         bool IsProdutoAssociated(int produtoId, int pontoColetaId);
+
+        Task<List<PontoColetaViewModel>> GetAllActive();
     }
 }

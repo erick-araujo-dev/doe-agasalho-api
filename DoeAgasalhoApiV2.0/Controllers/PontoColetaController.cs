@@ -1,6 +1,7 @@
 ﻿using DoeAgasalhoApiV2._0.Exceptions;
 using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
+using DoeAgasalhoApiV2._0.Repositories.Interface;
 using DoeAgasalhoApiV2._0.Services;
 using DoeAgasalhoApiV2._0.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,30 @@ namespace DoeAgasalhoApiV2._0.Controllers
     public class PontoColetaController : ControllerBase
     {
         private readonly IPontoColetaService _pontoColetaService;
+        private readonly IPontoColetaRepository _pontoColetaRepository;
 
-        public PontoColetaController(IPontoColetaService pontoColetaService)
+        public PontoColetaController(IPontoColetaService pontoColetaService, IPontoColetaRepository pontoColetaRepository)
         {
             _pontoColetaService = pontoColetaService;
+            _pontoColetaRepository = pontoColetaRepository; 
         }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var pontosColeta = await _pontoColetaService.GetAllActive();
+                return Ok(pontosColeta);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro ao obter todos os pontos de coleta.{ex.Message}");
+            }
+        }
+
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -34,34 +54,6 @@ namespace DoeAgasalhoApiV2._0.Controllers
             catch (Exception)
             {
                 return StatusCode(500, "Ocorreu um erro ao buscar o ponto de coleta.");
-            }
-        }
-        [HttpGet("all")]
-        public IActionResult Get()
-        {
-            try
-            {
-                var collectPoints = _pontoColetaService.GetAllCollectPoint();
-                return Ok(collectPoints);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Ocorreu um erro ao obter todos os usuários.");
-            }
-        }
-
-        [HttpGet("active")]
-        public IActionResult GetActive()
-        {
-            try
-            {
-                var users = _pontoColetaService.GetActivateCollectPoint();
-                return Ok(users);
-            }
-
-            catch (Exception)
-            {
-                return StatusCode(500, "Ocorreu um erro ao obter os usuários ativos.");
             }
         }
 
@@ -120,6 +112,10 @@ namespace DoeAgasalhoApiV2._0.Controllers
             catch(ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro ao atualizar o usuário.");
             }
         }
 

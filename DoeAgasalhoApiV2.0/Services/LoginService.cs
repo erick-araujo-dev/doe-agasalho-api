@@ -36,13 +36,13 @@ namespace DoeAgasalhoApiV2._0.Services
             //verifica se o login e senha sao validos 
             if (usuario == null || !_VerifyPassword(model.Senha, usuario.Senha))
             {
-                throw new NotFoundException("Usuário ou senha inválidos!");
+                throw new NotFoundException("Usuário ou senha inválidos");
             }
 
             // Verifica se o usuário está ativo
             if (!_usuarioService.IsActiveUser(usuario))
             {
-                throw new InvalidOperationException("Usuário inativo. Entre em contato com o administrador.");
+                throw new InvalidOperationException("Usuário inativo, entre em contato com o administrador.");
             }
 
             // Verifica se o ponto de coleta do usuário está ativo, se estiver inativo não conseguirá fazer login

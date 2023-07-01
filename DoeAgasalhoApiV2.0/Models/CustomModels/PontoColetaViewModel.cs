@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using DoeAgasalhoApiV2._0.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace DoeAgasalhoApiV2._0.Models.CustomModels
 {
@@ -23,5 +24,9 @@ namespace DoeAgasalhoApiV2._0.Models.CustomModels
         public string Estado { get; set; }
 
         public string Cep { get; set; }
+
+        public int QuantidadeUsuarios { get; set; }
+
+        public int QuantidadeProdutos { get; set; }
     }
 }
