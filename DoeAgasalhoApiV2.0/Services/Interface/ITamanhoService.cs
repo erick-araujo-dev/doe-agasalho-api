@@ -8,6 +8,6 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 
         TamanhoModel GetById(int id);
 
-        List<TamanhoModel> GetSizesByFilter(int? type, string characteristic);
+        List<TamanhoModel> GetSizesByFilter(int? type, string? gender, string? characteristics);
     }
 }

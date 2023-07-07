@@ -102,18 +102,127 @@ namespace DoeAgasalhoApiV2._0.Repositories
                 Include(p => p.PontoProdutos);
         }
 
+        public List<ProdutoViewModel> GetAllOrFiltered(int? tipoId, int? tamanhoId, string genero, string caracteristica, int collectPointIdAuth)
+        {
+            var collectPointId = collectPointIdAuth;
 
+            var query = _context.Produtos.Include(p => p.Tipo).Include(p => p.Tamanho).AsQueryable();
+
+            if (tipoId.HasValue)
+                query = query.Where(p => p.TipoId == tipoId.Value);
+
+            if (tamanhoId.HasValue)
+                query = query.Where(p => p.TamanhoId == tamanhoId.Value);
+
+            if (!string.IsNullOrEmpty(genero))
+                query = query.Where(p => p.Genero == genero);
+
+            if (!string.IsNullOrEmpty(caracteristica))
+                query = query.Where(p => p.Caracteristica == caracteristica);
+
+            if (collectPointId != null)
+                query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
+
+            var produtos = query.OrderByDescending(p => p.Estoque).ToList();
+
+            var produtosViewModel = produtos.Select(p => new ProdutoViewModel
+            {
+                Id = p.Id,
+                Ativo = p.Ativo,
+                Tipo = p.Tipo?.Nome,
+                Caracteristica = p.Caracteristica,
+                Tamanho = p.Tamanho?.Nome,
+                Genero = p.Genero,
+                Estoque = p.Estoque
+            }).ToList();
+
+            return produtosViewModel;
+        }
+
+        //Lista pra buscar o produto antes de criar
+        public List<ProdutoViewModel> GetWithFilter(
+        string tipo,
+        string tamanho,
+        string genero,
+        string caracteristica,
+        int collectPointIdAuth)
+        {
+            var collectPointId = collectPointIdAuth;
+
+            var query = _context.Produtos
+                .Include(p => p.Tipo)
+                .Include(p => p.Tamanho)
+                .Include(p => p.PontoProdutos)
+                .Where(p =>
+                    (string.IsNullOrEmpty(tipo) || p.Tipo.Nome == tipo) &&
+                    (string.IsNullOrEmpty(tamanho) || p.Tamanho.Nome == tamanho) &&
+                    (string.IsNullOrEmpty(genero) || p.Genero == genero) &&
+                    (string.IsNullOrEmpty(caracteristica) || p.Caracteristica == caracteristica) &&
+                    (collectPointId == null || p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId))
+                )
+                .ToList();
+
+            var produtosViewModel = query.Select(p => new ProdutoViewModel
+            {
+                Id = p.Id,
+                Ativo = p.Ativo,
+                Tipo = p.Tipo?.Nome,
+                Caracteristica = p.Caracteristica,
+                Tamanho = p.Tamanho?.Nome,
+                Genero = p.Genero,
+                Estoque = p.Estoque
+            }).ToList();
+
+            return produtosViewModel;
+        }
 
         //filtragem para usar na exibicao dos valores do select, quando marcar um tipo, retornara as caracteristicas para aquele tipo especifico
-        public List<string> GetCharacteristicsByFilter(int tipoId, int tamanhoId)
+        public List<string> GetCharacteristicsByFilter(int? tipoId, int? tamanhoId, string genero, int collectPointId)
         {
-            var characteristics = _context.Produtos
-                .Where(p => p.TipoId == tipoId && p.TamanhoId == tamanhoId)
+            var query = _context.Produtos.AsQueryable();
+
+            if (tipoId.HasValue)
+                query = query.Where(p => p.TipoId == tipoId.Value);
+
+            if (tamanhoId.HasValue)
+                query = query.Where(p => p.TamanhoId == tamanhoId.Value);
+
+            if (!string.IsNullOrEmpty(genero))
+                query = query.Where(p => p.Genero == genero);
+
+            if (collectPointId != null)
+                query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
+
+            var characteristics = query
                 .Select(p => p.Caracteristica)
                 .Distinct()
                 .ToList();
 
             return characteristics;
+        }
+
+        public List<string> GetGenderByFilter(int? tipoId, int? tamanhoId, string? characteristics, int collectPointId)
+        {
+            var query = _context.Produtos.AsQueryable();
+
+            if (tipoId.HasValue)
+                query = query.Where(p => p.TipoId == tipoId.Value);
+
+            if (tamanhoId.HasValue)
+                query = query.Where(p => p.TamanhoId == tamanhoId.Value);
+
+            if (!string.IsNullOrEmpty(characteristics))
+                query = query.Where(p => p.Caracteristica == characteristics);
+
+            if (collectPointId != null)
+                query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
+
+            var genders = query
+                .Select(p => p.Genero)
+                .Distinct()
+                .ToList();
+
+            return genders;
         }
 
         //Retorna os produtos de acordo com o ponto de coleta

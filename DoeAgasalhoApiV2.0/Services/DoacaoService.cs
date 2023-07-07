@@ -16,7 +16,10 @@ namespace DoeAgasalhoApiV2._0.Services
         private readonly IUtilsService _utilsService;
         private readonly ITipoService _tipoService;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioService _usuarioService;
         private readonly IPontoColetaRepository _pontoColetaRepository;
+        private readonly ITamanhoService _tamanhoService;
+        private readonly IPontoColetaService _pontoColetaService;
 
         public DoacaoService
         (
@@ -25,7 +28,10 @@ namespace DoeAgasalhoApiV2._0.Services
             IUtilsService utilsService,
             IUsuarioRepository usuarioRepository,
             IPontoColetaRepository pontoColetaRepository,
-            ITipoService tipoService)
+            ITipoService tipoService,
+            ITamanhoService tamanhoService,
+            IUsuarioService usuarioService,
+            IPontoColetaService pontoColetaService)
         {
             _doacaoRepository = doacaoRepository;
             _produtoRepository = produtoRepository;
@@ -33,45 +39,84 @@ namespace DoeAgasalhoApiV2._0.Services
             _usuarioRepository = usuarioRepository;
             _pontoColetaRepository = pontoColetaRepository;
             _tipoService = tipoService;
+            _tamanhoService = tamanhoService;
+            _usuarioService = usuarioService;
+            _pontoColetaService = pontoColetaService;   
         }
 
         public List<DoacaoViewModel> GetAllDonations(int? collectPointId, int? userId, int? day, int? month, int? year, string? typeOfMovement)
         {
             var query = _doacaoRepository.GetAll();
 
-            if (collectPointId.HasValue) query = query.Where(d => d.Produto.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
-            
-            if (userId.HasValue) query = query.Where(d => d.UsuarioId == userId);
-          
-            if (day.HasValue) query = query.Where(d => d.DataMovimento.Day == day);
-            
-            if (month.HasValue) query = query.Where(d => d.DataMovimento.Month == month);
-            
-            if (year.HasValue) query = query.Where(d => d.DataMovimento.Year == year);
-            
-            if (!string.IsNullOrEmpty(typeOfMovement)) query = query.Where(d => d.TipoMovimento == typeOfMovement);
-
-            var doacoes = query.OrderBy(d => d.DataMovimento).ToList();
-
-            var doacoesViewModel = new List<DoacaoViewModel>();
-
-            foreach (var doacao in doacoes)
+            if (collectPointId.HasValue)
             {
-                var doacaoViewModel = new DoacaoViewModel
-                {
-                    Id = doacao.Id,
-                    Usuario = doacao.Usuario.Nome,
-                    Tipo = _tipoService.GetById(doacao.Produto.TipoId)?.Nome,
-                    Caracteristica = doacao.Produto.Caracteristica,
-                    TipoMovimento = doacao.TipoMovimento,
-                    Quantidade = doacao.Quantidade,
-                    DataMovimento = doacao.DataMovimento
-                };
-
-                doacoesViewModel.Add(doacaoViewModel);
+                query = query.Where(d => d.Produto.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
             }
+
+            if (userId.HasValue)
+            {
+                query = query.Where(d => d.UsuarioId == userId);
+            }
+
+            if (day.HasValue)
+            {
+                query = query.Where(d => d.DataMovimento.Day == day);
+            }
+
+            if (month.HasValue)
+            {
+                query = query.Where(d => d.DataMovimento.Month == month);
+            }
+
+            if (year.HasValue)
+            {
+                query = query.Where(d => d.DataMovimento.Year == year);
+            }
+
+            if (!string.IsNullOrEmpty(typeOfMovement))
+            {
+                query = query.Where(d => d.TipoMovimento == typeOfMovement);
+            }
+
+            var groupedDoacoes = query
+    .GroupBy(d => new
+    {
+        d.Produto.TipoId,
+        d.Produto.TamanhoId,
+        d.TipoMovimento,
+        d.Produto.Caracteristica,
+        Data = new DateTime(d.DataMovimento.Year, d.DataMovimento.Month, d.DataMovimento.Day),
+        d.UsuarioId,
+        d.Usuario.PontoColetaId
+})
+    .Select(g => new
+    {
+        TipoId = g.Key.TipoId,
+        TamanhoId = g.Key.TamanhoId,
+        TipoMovimento = g.Key.TipoMovimento,
+        Caracteristica = g.Key.Caracteristica,
+        DataMovimento = g.Key.Data,
+        UsuarioId = g.Key.UsuarioId,
+        PontoColeta = g.Key.PontoColetaId,
+        QuantidadeTotal = g.Sum(d => d.Quantidade)
+    })
+    .OrderBy(g => g.TipoMovimento == "entrada" ? 0 : g.TipoMovimento == "saida" ? 1 : 2)
+    .ToList();
+            var doacoesViewModel = groupedDoacoes.Select(g => new DoacaoViewModel
+            {
+                Tipo = _tipoService.GetById(g.TipoId)?.Nome,
+                Tamanho = _tamanhoService.GetById(g.TamanhoId)?.Nome,
+                Caracteristica = g.Caracteristica,
+                TipoMovimento = g.TipoMovimento,
+                Quantidade = g.QuantidadeTotal,
+                DataMovimento = g.DataMovimento,
+                Usuario = _usuarioService.GetById(g.UsuarioId)?.Nome,
+                PontoColeta = g.PontoColeta.HasValue ? _pontoColetaService.GetById(g.PontoColeta.Value)?.NomePonto : null
+            }).ToList();
+
             return doacoesViewModel;
         }
+
 
 
         public DoacaoViewModel ExibirDoacaoPorId(int id)
@@ -164,7 +209,7 @@ namespace DoeAgasalhoApiV2._0.Services
 
             if (model.Quantidade <= 0) //Verifica se digitou uma quantidade valida
             {
-                throw new ArgumentException("Quantidade inválida, ecolha um valor maior que 0.");
+                throw new ArgumentException("Quantidade inválida, escolha um valor maior que 0.");
             }
 
             if (tipoMovimento == "saida" && product.Estoque < model.Quantidade)//verifica se a quantidasde eh menor ou igual ao estoque

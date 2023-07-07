@@ -13,8 +13,6 @@ public partial class PontoColetaModel
 
     public int EnderecoId { get; set; }
 
-    public virtual EnderecoModel Endereco { get; set; }
-
-    public ICollection<PontoProdutoModel> PontoProdutos { get; set; }
+    public virtual EnderecoModel Endereco { get; set; } = null!;
 
 }

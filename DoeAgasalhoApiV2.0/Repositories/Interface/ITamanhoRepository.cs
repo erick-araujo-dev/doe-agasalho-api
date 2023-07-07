@@ -10,7 +10,7 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 
         TamanhoModel GetByName(string name);
 
-        List<TamanhoModel> GetSizesByFilter(int? type, string characteristic);
+        List<TamanhoModel> GetSizesByFilter(int? type, string gender, string characteristic, int collectpoint);
 
         void Update(TamanhoModel model);
     }

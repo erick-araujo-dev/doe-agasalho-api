@@ -8,10 +8,12 @@ namespace DoeAgasalhoApiV2._0.Services
     public class TamanhoService : ITamanhoService
     {
         private readonly ITamanhoRepository _tamanhoRepository;
+        private readonly IUtilsService _utilsService;
 
-        public TamanhoService(ITamanhoRepository tamanhoRepository)
+        public TamanhoService(ITamanhoRepository tamanhoRepository, IUtilsService utilsService)
         {
             _tamanhoRepository = tamanhoRepository;
+            _utilsService = utilsService;
         }
 
         public TamanhoModel CreateNewSize(string size)
@@ -19,9 +21,12 @@ namespace DoeAgasalhoApiV2._0.Services
             var newSize = _tamanhoRepository.Add(size);
             return newSize;
         }
-        public List<TamanhoModel> GetSizesByFilter(int? type, string characteristic)
+        public List<TamanhoModel> GetSizesByFilter(int? type, string? gender, string? characteristics)
         {
-            return _tamanhoRepository.GetSizesByFilter(type, characteristic);
+            var collectPoint = _utilsService.GetPontoColetaIdFromToken();
+
+            var sizes = _tamanhoRepository.GetSizesByFilter(type, gender, characteristics, collectPoint);
+            return sizes;
         }
 
         public TamanhoModel GetById(int id)

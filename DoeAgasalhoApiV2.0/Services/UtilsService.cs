@@ -40,9 +40,7 @@ namespace DoeAgasalhoApiV2._0.Services
             // Verificar se o nome pode conter numeros e se contém apenas letras numeros hifen e espaços
             if (isNumeric)
             {
-
-
-                if (!Regex.IsMatch(value, @"^[A-Za-z0-9\s\-]+$"))
+                if (!Regex.IsMatch(value, @"^[\p{L}0-9\s\-]+$"))
                 {
                     throw new ArgumentException($"O campo '{field}' contém caracteres inválidos.");
                 }

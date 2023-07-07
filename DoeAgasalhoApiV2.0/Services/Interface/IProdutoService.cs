@@ -23,6 +23,11 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
         ProdutoModel UpdateProduct(int id, ProdutoCreateModel product);
 
         List<ProdutoViewModel> GetAllOrFiltered(int? tipoId, int? tamanhoId, string? genero, string? caracteristica);
-        List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId);
+
+        List<string> GetCharacteristicsByFilter(int? tipoId, int? tamanhoId, string genero);
+
+        List<string> GetGenderByFilters(int? tipoId, int? tamanhoId, string? characteristics);
+
+        List<ProdutoViewModel> GetProductsWithFilter(string type, string size, string gender, string characteristic);
     }
 }

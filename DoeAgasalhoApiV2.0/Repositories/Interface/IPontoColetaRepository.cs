@@ -5,6 +5,8 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 {
     public interface IPontoColetaRepository
     {
+        PontoColetaModel GetById(int? id);
+
         PontoColetaModel GetById(int id);
 
         PontoColetaModel GetByName(string name);
@@ -23,5 +25,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
         bool IsProdutoAssociated(int produtoId, int pontoColetaId);
 
         Task<List<PontoColetaViewModel>> GetAllActive();
+        List<PontoColetaModel> GetAllOrFilteredCollectPoint(int? collectPointId);
     }
 }

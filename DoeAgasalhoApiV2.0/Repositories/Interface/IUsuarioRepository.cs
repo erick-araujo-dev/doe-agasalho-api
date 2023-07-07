@@ -10,8 +10,8 @@ namespace DoeAgasalhoApiV2._0.Repository.Interface
 
         UsuarioModel GetByEmail(string email);
 
-        List<UsuarioModel> GetByActiveStatus(bool ativo);
-
+/*        List<UsuarioModel> GetByActiveStatus(bool ativo);
+*/
         UsuarioModel GetById(int id);
 
         UsuarioModel GetByUserName(string name);
@@ -27,5 +27,7 @@ namespace DoeAgasalhoApiV2._0.Repository.Interface
         void DeactivateUser(int userId);
 
         IEnumerable<UsuarioModel> GetUsuariosByPontoColetaId(int? pontoColetaId);
+
+        List<UsuarioViewModel> GetByActiveStatus(bool ativo);
     }
 }

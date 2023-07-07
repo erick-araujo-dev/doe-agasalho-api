@@ -41,6 +41,10 @@ namespace DoeAgasalhoApiV2._0.Services
             return collectPoint;
         }
 
+        public List<PontoColetaModel> GetAllOrFilteredCollectPoint(int? collectPointId)
+        {
+            return _pontoColetaRepository.GetAllOrFilteredCollectPoint(collectPointId);
+        }
         public PontoColetaModel CreateCollectPoint(PontoColetaCreateModel novoPontoColeta)
         {
             _ValidateCollectPointName(novoPontoColeta.NomePonto);

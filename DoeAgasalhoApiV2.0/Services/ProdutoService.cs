@@ -5,6 +5,7 @@ using DoeAgasalhoApiV2._0.Models.Entities;
 using DoeAgasalhoApiV2._0.Repositories.Interface;
 using DoeAgasalhoApiV2._0.Repository.Interface;
 using DoeAgasalhoApiV2._0.Services.Interface;
+using System.Reflection.PortableExecutable;
 
 namespace DoeAgasalhoApiV2._0.Services
 {
@@ -46,39 +47,35 @@ namespace DoeAgasalhoApiV2._0.Services
         {
             var collectPointId = _GetCollectPointIdAuth();
 
-            var query = _produtoRepository.GetAll();
+            var products = _produtoRepository.GetAllOrFiltered(tipoId, tamanhoId, genero, caracteristica, collectPointId);
 
-            if (tipoId.HasValue) query = query.Where(p => p.TipoId == tipoId.Value);
-            
-            if (tamanhoId.HasValue) query = query.Where(p => p.TamanhoId == tamanhoId.Value);
+            return products;
+        }
 
-            if (!string.IsNullOrEmpty(genero)) query = query.Where(p => p.Genero == genero);
+        //Retorna as caracteristicas filtradas por produto e tamanho
+        public List<string> GetCharacteristicsByFilter(int? tipoId, int? tamanhoId, string? genero)
+        {
+            var collectPointId = _GetCollectPointIdAuth();
 
-            if (!string.IsNullOrEmpty(caracteristica)) query = query.Where(p => p.Caracteristica == caracteristica);
+            var characteristics = _produtoRepository.GetCharacteristicsByFilter(tipoId, tamanhoId, genero, collectPointId);
+            return characteristics;
+        }
 
-            if (collectPointId != null) query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectPointId));
+        public List<ProdutoViewModel> GetProductsWithFilter(string type, string size, string gender, string characteristic)
+        {
+            var collectPointId = _GetCollectPointIdAuth();
 
-            var produtos = query.OrderBy(p => p.Tipo.Nome).ToList();
+            var products = _produtoRepository.GetWithFilter(type, size, gender,characteristic, collectPointId);
+            return products;
+        }
 
-            var produtosViewModel = new List<ProdutoViewModel>();
+        //Retorna as generos filtradas por produto e tamanho
+        public List<string> GetGenderByFilters(int? tipoId, int? tamanhoId, string? characteristics)
+        {
+            var collectPointId = _GetCollectPointIdAuth();
 
-            foreach (var produto in produtos)
-            {
-                var produtoViewModel = new ProdutoViewModel
-                {
-                    Id = produto.Id,
-                    Ativo = produto.Ativo,
-                    Tipo = _tipoService.GetById(produto.TipoId)?.Nome,
-                    Caracteristica = produto.Caracteristica,
-                    Tamanho = _tamanhoService.GetById(produto.TamanhoId)?.Nome,
-                    Genero = produto.Genero,
-                    Estoque = produto.Estoque,
-                };
-
-                produtosViewModel.Add(produtoViewModel);
-            }
-
-            return produtosViewModel;
+            var genders = _produtoRepository.GetGenderByFilter(tipoId, tamanhoId, characteristics, collectPointId);
+            return genders;
         }
 
         //Retorna produto por Id
@@ -128,11 +125,7 @@ namespace DoeAgasalhoApiV2._0.Services
 
             return _produtoRepository.GetProdutosByPontoColeta(collectPointId);
         }
-        //Retorna as caracteristicas filtradas por produto e tamanho
-        public List<string> GetCharacteristicsByFilter(int TipoId, int TamanhoId)
-        {
-            return _produtoRepository.GetCharacteristicsByFilter(TipoId, TamanhoId);
-        }
+       
 
         //criar um novo produto
         public ProdutoModel CreateProduct(ProdutoCreateModel newProductCreate)
@@ -141,7 +134,7 @@ namespace DoeAgasalhoApiV2._0.Services
             var collectPointId = _GetCollectPointIdAuth();
 
             //Valida caracteristica e genero
-            _utilsService.ValidateStringField(newProductCreate.Caracteristica, "caracteristica", 50, false);
+            _utilsService.ValidateStringField(newProductCreate.Caracteristica, "caracteristica", 50, true);
             _ValidateGender(newProductCreate.Genero);
 
             //Valida os dados, e cria um novo tipo e tamanho se necessario
@@ -196,7 +189,7 @@ namespace DoeAgasalhoApiV2._0.Services
             _ = existingProduct ?? throw new NotFoundException("Produto não encontrado."); //Verifica se eh nulo, se sim, lanca uma exception
 
             //Valida os dados recebidos para atualizacao
-            _utilsService.ValidateStringField(product.Caracteristica, "caracteristica", 50, false);
+            _utilsService.ValidateStringField(product.Caracteristica, "caracteristica", 50, true);
             _ValidateGender(product.Genero);
             _utilsService.ValidateStringField(product.Tamanho, "tamanho", 20, true);
             _utilsService.ValidateStringField(product.Tipo, "tipo", 20, false);

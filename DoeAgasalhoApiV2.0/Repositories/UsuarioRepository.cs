@@ -1,17 +1,23 @@
 ﻿using DoeAgasalhoApiV2._0.Data.Context;
 using DoeAgasalhoApiV2._0.Models.CustomModels;
 using DoeAgasalhoApiV2._0.Models.Entities;
+using DoeAgasalhoApiV2._0.Repositories.Interface;
 using DoeAgasalhoApiV2._0.Repository.Interface;
+using DoeAgasalhoApiV2._0.Services;
+using System.Linq;
 
 namespace DoeAgasalhoApiV2._0.Repository
 {
     public class UsuarioRepository : IUsuarioRepository
     {
         private readonly DbDoeagasalhov2Context _context;
+        private readonly IPontoColetaRepository _pontoColetaRepository;
 
-        public UsuarioRepository(DbDoeagasalhov2Context context)
+
+        public UsuarioRepository(DbDoeagasalhov2Context context, IPontoColetaRepository pontoColetaRepository)
         {
             _context = context;
+            _pontoColetaRepository = pontoColetaRepository;
         }
 
         public UsuarioModel GetByEmail(string email)
@@ -24,12 +30,29 @@ namespace DoeAgasalhoApiV2._0.Repository
             return _context.Usuarios.ToList();
         }
 
-
-        public List<UsuarioModel> GetByActiveStatus(bool ativo)
+      
+        public List<UsuarioViewModel> GetByActiveStatus(bool ativo)
         {
             string ativoString = ativo ? "1" : "0";
-            return _context.Usuarios.Where(u => u.Ativo == ativoString).ToList();
+            var usuarios = _context.Usuarios.Where(u => u.Ativo == ativoString).ToList();
+
+            var usuariosViewModel = usuarios
+                .OrderByDescending(u => u.Tipo)
+                .Select(usuario => new UsuarioViewModel
+                {
+                    Id = usuario.Id,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Tipo = usuario.Tipo,
+                    Ativo = usuario.Ativo,
+                    PontoColeta = _pontoColetaRepository.GetById(usuario.PontoColetaId)?.NomePonto ?? String.Empty
+                })
+                .ToList();
+
+            return usuariosViewModel;
         }
+
+
 
         public UsuarioModel GetById(int id)
         {
@@ -98,12 +121,15 @@ namespace DoeAgasalhoApiV2._0.Repository
             {
                 return _context.Usuarios
                     .Where(u => u.PontoColetaId == pontoColetaId)
+                    .Where(u => u.Ativo == "1")
+                    .Where(u => u.Tipo != "admin")
                     .ToList();
             }
 
-            return _context.Usuarios.ToList();
+            return _context.Usuarios.
+                Where(u => u.Tipo != "admin")
+                .Where(u => u.Ativo == "1")
+                .ToList();
         }
-
-
     }
 }

@@ -46,5 +46,39 @@ namespace DoeAgasalhoApiV2._0.Services
         {
             return _context.Tipos.ToList();
         }
+
+        public List<TipoModel> GetTypesByFilter(int? size, string? gender, string? characteristic, int collectpoint)
+        {
+            var query = _context.Produtos.AsQueryable();
+
+            if (size.HasValue)
+            {
+                query = query.Where(p => p.TamanhoId == size.Value);
+            }
+
+            if (!string.IsNullOrEmpty(gender))
+            {
+                query = query.Where(p => p.Genero == gender);
+            }
+
+            if (!string.IsNullOrEmpty(characteristic))
+            {
+                query = query.Where(p => p.Caracteristica == characteristic);
+            }
+
+            if (collectpoint != null)
+                query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectpoint));
+
+            var type = query
+                .Select(p => p.TipoId)
+                .Distinct()
+                .ToList();
+
+            var typesModels= _context.Tipos
+                .Where(t => type.Contains(t.Id))
+                .ToList();
+
+            return typesModels;
+        }
     }
 }

@@ -38,6 +38,21 @@ namespace DoeAgasalhoApiV2._0.Controllers
             }
         }
 
+        //Retorna os usuarios por ponto de coleta, se nao for enviado o ponto de coleta retorna todos usuarios
+        [HttpGet("byuser")]
+        public IActionResult GetUsuariosByPontoColetaId(int? collectPointId)
+        {
+            try
+            {
+                var collectPoint = _pontoColetaService.GetAllOrFilteredCollectPoint(collectPointId);
+                return Ok(collectPoint);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro ao obter os pontos de coletas.");
+            }
+        }
+
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -85,9 +100,9 @@ namespace DoeAgasalhoApiV2._0.Controllers
             {
                 return StatusCode(400, $"Tipo de dado inválido: {ex.Message}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "Ocorreu um erro ao cadastrar o ponto de coleta."); ;
             }
         }
 

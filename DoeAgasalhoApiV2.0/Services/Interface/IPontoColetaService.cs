@@ -20,5 +20,6 @@ namespace DoeAgasalhoApiV2._0.Services
         PontoColetaModel GetById(int id);
 
         Task<List<PontoColetaViewModel>> GetAllActive();
+        List<PontoColetaModel> GetAllOrFilteredCollectPoint(int? collectPointId);
     }
 }

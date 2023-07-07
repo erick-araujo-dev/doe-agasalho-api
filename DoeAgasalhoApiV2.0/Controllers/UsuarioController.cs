@@ -24,12 +24,20 @@ namespace DoeAgasalhoApiV2._0.Controllers
             _utilsService = utilsService;   
             _usuarioRepository = usuarioRepository;
         }
+
         //Retorna os usuarios por ponto de coleta, se nao for enviado o ponto de coleta retorna todos usuarios
         [HttpGet]
-        public IActionResult GetUsuariosByPontoColetaId(int? pontoColetaId)
+        public IActionResult GetUsuariosByPontoColetaId(int? collectPointId)
         {
-            var usuarios = _usuarioRepository.GetUsuariosByPontoColetaId(pontoColetaId);
-            return Ok(usuarios);
+            try
+            {
+                var usuarios = _usuarioService.GetUserByCollectPoint(collectPointId);
+                return Ok(usuarios);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ocorreu um erro ao obter os usuários.");
+            }
         }
 
         [HttpGet("all")]
@@ -48,7 +56,6 @@ namespace DoeAgasalhoApiV2._0.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin")]
         public IActionResult Get(int id)
         {
             try

@@ -14,5 +14,7 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
         void Update(TipoModel model);
 
         List<TipoModel> GetAllTypes();
+
+        List<TipoModel> GetTypesByFilter(int? size, string? gender, string? characteristic, int collectpoint);
     }
 }

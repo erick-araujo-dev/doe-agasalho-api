@@ -17,8 +17,6 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         void DeactivateProduct(int productId);
 
-        List<string> GetCharacteristicsByFilter(int tipoId, int tamanhoId);
-
         ProdutoModel Add(ProdutoModel product, int collectPointId, int userId);
 
         List<ProdutoViewModel> GetProdutosByPontoColeta(int pontoColetaId, string ativo = null);
@@ -27,5 +25,12 @@ namespace DoeAgasalhoApiV2._0.Repositories.Interface
 
         IQueryable<ProdutoModel> GetAll();
 
+        List<ProdutoViewModel> GetAllOrFiltered(int? tipoId, int? tamanhoId, string genero, string caracteristica, int collectPointIdAuth);
+
+        List<string> GetCharacteristicsByFilter(int? tipoId, int? tamanhoId, string genero, int collectPointId);
+
+        List<string> GetGenderByFilter(int? tipoId, int? tamanhoId, string? characteristics, int collectPointId);
+
+        List<ProdutoViewModel> GetWithFilter(string tipo, string tamanho, string genero, string caracteristica, int collectPointIdAuth);
     }
 }

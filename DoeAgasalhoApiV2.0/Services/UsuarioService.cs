@@ -26,18 +26,23 @@ namespace DoeAgasalhoApiV2._0.Services
         public List<UsuarioModel> GetAllUsers() => _usuarioRepository.GetAll();
 
         //Obter usuarios ativos
-        public List<UsuarioModel> GetActiveUsers() => _usuarioRepository.GetByActiveStatus(true);
+        public List<UsuarioViewModel> GetActiveUsers() => _usuarioRepository.GetByActiveStatus(true);
 
         //Obter usuarios desativados
-        public List<UsuarioModel> GetInactiveUsers() => _usuarioRepository.GetByActiveStatus(false);
+        public List<UsuarioViewModel> GetInactiveUsers() => _usuarioRepository.GetByActiveStatus(false);
 
-        //
+        //obter por id
         public UsuarioModel GetById(int id)
         {
             var user = _usuarioRepository.GetById(id);
             _ = user ?? throw new ArgumentNullException("Usuario não encontrado");
 
             return user;
+        }
+
+        public IEnumerable<UsuarioModel> GetUserByCollectPoint(int? collectPoint)
+        {
+            return _usuarioRepository.GetUsuariosByPontoColetaId(collectPoint);
         }
 
         // Add novo usuario

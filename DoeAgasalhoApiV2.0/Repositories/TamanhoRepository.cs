@@ -41,7 +41,7 @@ namespace DoeAgasalhoApiV2._0.Services
             _context.SaveChanges();
         }
 
-        public List<TamanhoModel> GetSizesByFilter(int? type, string characteristic)
+        public List<TamanhoModel> GetSizesByFilter(int? type, string gender, string characteristic, int collectpoint)
         {
             var query = _context.Produtos.AsQueryable();
 
@@ -50,10 +50,18 @@ namespace DoeAgasalhoApiV2._0.Services
                 query = query.Where(p => p.TipoId == type.Value);
             }
 
+            if (!string.IsNullOrEmpty(gender))
+            {
+                query = query.Where(p => p.Genero == gender);
+            }
+
             if (!string.IsNullOrEmpty(characteristic))
             {
                 query = query.Where(p => p.Caracteristica == characteristic);
             }
+
+            if (collectpoint != null)
+                query = query.Where(p => p.PontoProdutos.Any(pp => pp.PontoColetaId == collectpoint));
 
             var sizes = query
                 .Select(p => p.TamanhoId)

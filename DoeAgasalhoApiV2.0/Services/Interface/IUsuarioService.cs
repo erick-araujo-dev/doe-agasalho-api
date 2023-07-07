@@ -23,9 +23,12 @@ namespace DoeAgasalhoApiV2._0.Services.Interface
 
         List<UsuarioModel> GetAllUsers();
 
-        List<UsuarioModel> GetActiveUsers();
+        List<UsuarioViewModel> GetActiveUsers();
 
-        List<UsuarioModel> GetInactiveUsers();
+        List<UsuarioViewModel> GetInactiveUsers();
+
         UsuarioModel GetById(int id);
+
+        IEnumerable<UsuarioModel> GetUserByCollectPoint(int? collectPoint);
     }
 }
